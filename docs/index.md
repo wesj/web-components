@@ -15,11 +15,12 @@ Creates a console like version of JS Objects, that can be expanded/shrunk.
 <script type="module">
   import {JSObject} from 'https://cdn.jsdelivr.net/gh/wesj/web-components@main/prettyPrint.js'
   customElements.define('x-object', JSObject);
-
+  class Class { foo = "bar" }
   let obj = new JSObject({
     Hello: "World",
     date: new Date(),
-    foo: function() { }
+    obj: new Class(),
+    foo: function(a, b, c) { }
   });
   document.querySelector("#complex-demo").appendChild(obj);
 </script>
