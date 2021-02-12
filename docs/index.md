@@ -6,8 +6,8 @@ Creates a console like version of JS Objects, that can be expanded/shrunk.
   "Hello": "world",
   "array": [1,2,3,4],
   "deep": {
-    "null-property": null,
-    "undefined-property": undefined
+    "nullProperty": null,
+    "undefinedProperty": undefined
   }
 }</x-object>
 <script type="module">
