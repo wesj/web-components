@@ -6,13 +6,20 @@ Creates a console like version of JS Objects, that can be expanded/shrunk.
   "Hello": "world",
   "array": [1,2,3,4],
   "deep": {
-    "nullProperty": null,
-    "undefinedProperty": undefined
+    "nullProperty": null
   }
 }</x-object>
+<div id="complex-demo"></div>
 <script type="module">
   import {JSObject} from 'https://cdn.jsdelivr.net/gh/wesj/web-components@main/prettyPrint.js'
   customElements.define('x-object', JSObject);
+
+  let obj = new JSObject({
+    Hello: "World",
+    date: new Date(),
+    foo: function() { }
+  });
+  document.querySelector("#complex-demo").appendChild(obj);
 </script>
 ### Usage
 Import the web component and register it :)
@@ -56,9 +63,13 @@ The shadow dom produced looks like a definition list:
   </dd>
 </dl>
 ```
-Creating instances in code:
+The markup version only uses `JSON.parse` which may cause issues with some fields or key types. You can also create instances in code:
 ```
-let obj = new JSObject({Hello: "World"});
+let obj = new JSObject({
+  Hello: "World",
+  date: new Date(),
+  foo: function() { }
+});
 document.body.appendChild(obj);
 ```
 JSObject supports a few CSS-theming properties:
