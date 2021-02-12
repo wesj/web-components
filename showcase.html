@@ -1,0 +1,60 @@
+<html>
+    <head>
+        <style>
+html, body {
+    font-family: 'Courier New', Courier, monospace;
+}
+x-console {
+    display: block;
+    width: 100%;
+    border: 1px solid gray;
+}
+        </style>
+        <script type="module">
+import {Console, ConsoleItem} from './Console.js';
+import {JSObject} from '../ObjectPrinter/prettyPrint.js';
+
+function addItem(options, c) {
+    let item = new ConsoleItem();
+    item.setAttribute("level", options.level || "info");
+    item.textContent = options.message || "This is an info log message";
+    item.setAttribute("source", options.source || "showcase.html");
+    item.setAttribute("time", options.time || Date.now());
+    c.appendChild(item);
+}
+
+function start() {
+    customElements.define('x-console', Console);
+    customElements.define('x-consoleitem', ConsoleItem);
+    customElements.define('x-js', JSObject);
+
+    let c = new Console();
+    document.body.appendChild(c);
+
+    addItem({level: "error", message: "This is an error", source: "foo.html:123"}, c);
+    addItem({level: "info", message: "This is info"}, c);
+    addItem({level: "warn", message: "This is a warning"}, c);
+    addItem({level: "debug", message: "This is debug logging"}, c);
+
+    let item = new ConsoleItem();
+    item.setAttribute("level", "info");
+    let pretty = new JSObject();
+    pretty.obj = {
+        foo: "bar",
+        "bar": {
+            date: new Date()
+        }
+    };
+    item.appendChild(pretty);
+    item.setAttribute("source", "showcase.html");
+    item.setAttribute("time", Date.now());
+    c.appendChild(item);
+}
+
+window.addEventListener("load", start);
+        </script>
+    </head>
+
+    <body>
+    </body>
+</html>

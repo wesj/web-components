@@ -1,0 +1,86 @@
+<html>
+    <head>
+        <style type="text/css">
+x-object {
+    /*
+    --number-color: red;
+    --bool-color: blue;
+    --null-color: green;
+    --null-font: 20px Arial, sans-serif;
+    --undefined-color: orange;
+    --undefined-font: 40px Arial, sans-serif;
+    --array-color: orange;
+    --array-font: 40px Arial, sans-serif;
+    --object-color: orange;
+    --object-font: 40px Arial, sans-serif;
+    --title-color: orange;
+    --title-font: 40px Arial, sans-serif;
+    --deliminator-color: red;
+    --deliminator-font: italic small-caps bold 2em Georgia, serif;
+    --deliminator-padding: 2em;
+    --title-display: none;
+    */
+    font-family: 'Courier New', Courier, monospace;   
+}
+        </style>
+        <script type="module">
+import {JSObject} from './prettyPrint.js'
+customElements.define('x-object', JSObject);
+
+let obj = {
+    date: new Date(),
+    deep: {
+        foo: "Bar",
+        bas: {bang: "bang"}
+    },
+    array: [
+        1, 2, 3, false, null, undefined
+    ]
+}
+
+class Test {
+    value = "value";
+    func = function foo(a, b, c) { };
+    foo = new Foo();
+
+    constructor() {
+
+    }
+}
+
+class Foo {
+    value = "value";
+    func = function foo(ac) { }
+}
+
+function start() {
+    document.body.appendChild(new JSObject(obj));
+
+    let o = new JSObject();
+    o.obj = 12;
+    document.body.appendChild(o);
+
+    o = new JSObject("1234");
+    document.body.appendChild(o);
+
+    o = new JSObject();
+    o.obj = [1,2,3,"foo"];
+    document.body.appendChild(o);
+
+    o = new JSObject(new Test({foo: "bar"}));
+    document.body.appendChild(o);
+
+    let map = new Map();
+    map.set({foo: "bar"}, "baz");
+    o = new JSObject(map);
+    document.body.appendChild(o);
+}
+
+window.addEventListener('load', start);
+        </script>
+    </head>
+
+    <body>
+        <x-object>{ "hello": "world"}</x-object>
+    </body>
+ </html>
