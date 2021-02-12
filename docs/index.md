@@ -7,7 +7,7 @@ Creates a console like version of JS Objects, that can be expanded/shrunk.
   "array": [1,2,3,4],
   "deep": {
     "null-property": null,
-    "undefined-property": undefined,
+    "undefined-property": undefined
   }
 }</x-object>
 <script type="module">
