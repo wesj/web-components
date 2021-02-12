@@ -2,7 +2,14 @@
 ## JS Object printer
 
 Creates a console like version of JS Objects, that can be expanded/shrunk.
-<x-object>{"Hello": "world"}</x-object>
+<x-object>{
+  "Hello": "world",
+  "array": [1,2,3,4],
+  "deep": {
+    "null-property": null,
+    "undefined-property": undefined,
+  }
+}</x-object>
 <script type="module">
   import {JSObject} from 'https://cdn.jsdelivr.net/gh/wesj/web-components@main/prettyPrint.js'
   customElements.define('x-object', JSObject);
@@ -16,6 +23,38 @@ customElements.define('js-object', JSObject);
 Then just use it in markup
 ```
 <js-object>{"Hello": "World"}</js-object>
+```
+The shadow dom produced looks like a definition list:
+```
+<dl>
+  <dt class="expandable">
+    <!-- Shown when the item is expanded --!>
+    <span class="superSimplified">{…}</span>
+    <!-- Shown when the item is collapsed --!>
+    <span class="simplified object">
+      <span class="title">Object </span>
+      <!-- Shows details like the length of an array --!>
+      <span class="detail"></span>
+      <!-- Shown when the row is collapsed --!>
+      <span class="value">{Hello: "world"}</span>
+    </span>
+  </dt>
+  <dd>
+    <dl>
+      <dt class="row">
+        <span class="key">Hello: </span>
+        <span class="superSimplified">{…}</span>
+        <span class="simplified string">
+          <span class="title"></span>
+          <span class="detail"></span>
+          <span class="value">"world"</span>
+        </span>
+      </dt>
+      <!-- This is never generated since this item can't be expanded --!>
+      <dd></dd>
+    </dl>
+  </dd>
+</dl>
 ```
 Creating instances in code:
 ```
