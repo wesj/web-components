@@ -2,6 +2,7 @@
 ## JS Object printer
 
 Creates a console like version of JS Objects, that can be expanded/shrunk.
+### Markup:
 <x-object>{
   "Hello": "world",
   "array": [1,2,3,4],
@@ -9,6 +10,7 @@ Creates a console like version of JS Objects, that can be expanded/shrunk.
     "nullProperty": null
   }
 }</x-object>
+### Code:
 <div id="complex-demo"></div>
 <script type="module">
   import {JSObject} from 'https://cdn.jsdelivr.net/gh/wesj/web-components@main/prettyPrint.js'
@@ -23,17 +25,12 @@ Creates a console like version of JS Objects, that can be expanded/shrunk.
 </script>
 ### Usage
 Import the web component and register it :)
-```
-import {JSObject} from './prettyPrint.js'
-customElements.define('js-object', JSObject);
-```
+```import {JSObject} from './prettyPrint.js'
+customElements.define('js-object', JSObject);```
 Then just use it in markup
-```
-<js-object>{"Hello": "World"}</js-object>
-```
+```<js-object>{"Hello": "World"}</js-object>```
 The shadow dom produced looks like a definition list:
-```
-<dl>
+```<dl>
   <dt class="expandable">
     <!-- Shown when the item is expanded --!>
     <span class="superSimplified">{…}</span>
@@ -61,17 +58,14 @@ The shadow dom produced looks like a definition list:
       <dd></dd>
     </dl>
   </dd>
-</dl>
-```
+</dl>```
 The markup version only uses `JSON.parse` which may cause issues with some fields or key types. You can also create instances in code:
-```
-let obj = new JSObject({
+```let obj = new JSObject({
   Hello: "World",
   date: new Date(),
   foo: function() { }
 });
-document.body.appendChild(obj);
-```
+document.body.appendChild(obj);```
 JSObject supports a few CSS-theming properties:
 <dl>
 <dt>--number-color</dt>
