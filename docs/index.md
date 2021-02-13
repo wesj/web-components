@@ -112,3 +112,17 @@ JSObject supports a few CSS-theming properties:
 <dt>--title-display</dt>
 <dd>The display value used for titles (defaults to inline-block)</dd>
 </dl>
+
+## Console
+<x-console>
+  <x-consoleitem level="info" source="here.html" >This is info</x-consoleitem>
+  <x-consoleitem level="error" source="here.html">This is an error</x-consoleitem>
+  <x-consoleitem level="warn" source="here.html">This is a warning</x-consoleitem>
+  <x-consoleitem level="debug" source="here.html">This is debug</x-consoleitem>
+</x-console>
+<script type="module">
+  import {Console, ConsoleItem} from 'https://cdn.jsdelivr.net/gh/wesj/web-components@main/console.js';
+  customElements.define('x-console', Console);
+  customElements.define('x-consoleitem', ConsoleItem);
+</script>
+
