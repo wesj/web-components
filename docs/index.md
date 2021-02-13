@@ -75,6 +75,7 @@ let obj = new JSObject({
 });
 document.body.appendChild(obj);
 ```
+### Theming
 JSObject supports a few CSS-theming properties:
 <dl>
 <dt>--number-color</dt>
@@ -121,7 +122,7 @@ JSObject supports a few CSS-theming properties:
   <x-consoleitem level="debug" source="here.html">This is debug</x-consoleitem>
 </x-console>
 <script type="module">
-  import {Console, ConsoleItem} from 'https://cdn.jsdelivr.net/gh/wesj/web-components@main/console.js';
+  import {Console, ConsoleItem} from 'https://cdn.jsdelivr.net/gh/wesj/web-components@main/Console.js';
   customElements.define('x-console', Console);
   customElements.define('x-consoleitem', ConsoleItem);
 </script>
