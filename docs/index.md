@@ -126,4 +126,13 @@ JSObject supports a few CSS-theming properties:
   customElements.define('x-console', Console);
   customElements.define('x-consoleitem', ConsoleItem);
 </script>
-
+### Usage
+Import the web component and register it :) It exports two objects, Console and ConsoleItem. Console is the wrapper for individual ConsoleItems.
+```
+import {Console, ConsoleItem} from './Console.js'
+customElements.define('x-console', Console);
+customElements.define('x-consoleitem', ConsoleItem);
+```
+Then just use it in markup
+```
+<js-object>{"Hello": "World"}</js-object>
