@@ -135,4 +135,10 @@ customElements.define('x-consoleitem', ConsoleItem);
 ```
 Then just use it in markup
 ```
-<js-object>{"Hello": "World"}</js-object>
+<x-console>
+  <x-consoleitem level="info" source="here.html" >This is info</x-consoleitem>
+  <x-consoleitem level="error" source="here.html">This is an error</x-consoleitem>
+  <x-consoleitem level="warn" source="here.html">This is a warning</x-consoleitem>
+  <x-consoleitem level="debug" source="here.html">This is debug</x-consoleitem>
+</x-console>
+```
