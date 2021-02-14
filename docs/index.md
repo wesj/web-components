@@ -142,3 +142,25 @@ Then just use it in markup
   <x-consoleitem level="debug" source="here.html">This is debug</x-consoleitem>
 </x-console>
 ```
+## Dialog
+<x-dialog id="myDialog" oncommit="console.log('commit')" oncancel="console.log('cancel')" >
+    <div>Here is some text in this dialog</div>
+</x-dialog>
+<button onclick="document.querySelector('#myDialog').show()">Show Dialog</button>
+<script type="module">
+import Dialog from 'https://cdn.jsdelivr.net/gh/wesj/web-components@main/dialog.js';
+customElements.define('x-dialog', Dialog);
+</script>
+### Usage
+Import the web component and register it :) It exports a single Dialog class.
+```
+import Dialog from './dialog.js';
+customElements.define('x-dialog', Dialog);
+```
+Then just use it in markup
+```
+<x-dialog id="myDialog" oncommit="console.log('commit')" oncancel="console.log('cancel')" >
+    <div>Here is some text in this dialog</div>
+</x-dialog>
+<button onclick="document.querySelector('#myDialog').show()">Show Dialog</button>
+```
