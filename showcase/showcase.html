@@ -41,6 +41,7 @@ window.addEventListener("load", start);
         </x-console>
         <x-dialog id="myDialog" oncommit="console.log('commit')" oncancel="console.log('cancel')" >
             <div>Here is some text in this dialog</div>
+            <button slot="buttons" onclick="document.querySelector('#myDialog').hide()">Extra</button>
         </x-dialog>
         <button onclick="document.querySelector('#myDialog').show()">Show Dialog</button>
     </body>

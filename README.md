@@ -23,12 +23,12 @@ Console items have two supported attribute:
 <dt>`level`</dt>
 <dd>The level of logging. Will control the default color and display. Supports four values. `error`, `info`, `debug`, and `warn`.</dd>
 <dt>`source`</dt>
-<dd>The location where the log is from. Will be shown on the left side</dd>
+<dd>The location where the log is from. Will be shown on the right hand side</dd>
 </dl>
 Any content inside the tag will be rendered as the message's body.
 
 ## dialog.js
-A wrapper around an html dialog. I think this is probably only needed because of FF's lack of css `::background` support, but... I use it anyway. Adds two little buttons by default as well. One for 'OK' which will fire a `commit` event when tapped, and one for `Cancel` which will fire a `cancel` even when tapped.
+A wrapper around an html dialog. I think this is probably only needed because of FF's lack of css `::background` support, but... I use it anyway. Adds two little buttons by default as well, Ok and Cancel.
 ```
 import Dialog from './dialog.js';
 customElements.define('x-dialog', Dialog);
@@ -40,7 +40,23 @@ Then just use it in markup
 </x-dialog>
 <button onclick="document.querySelector('#myDialog').show()">Show Dialog</button>
 ```
-
+### Events
+Supports two events, `confirm` and `cancel` for when the default "Ok" or `Cancel` buttons are tapped.
+```
+<x-dialog id="myDialog" oncommit="console.log('commit')" oncancel="console.log('cancel')" >
+    <div>Here is some text in this dialog</div>
+</x-dialog>
+```
+Calling preventDefault on either event will prevent hiding the dialog.
+### Slots
+You can add custom buttons using the `buttons` slot:
+```
+<x-dialog id="myDialog">
+    <div>Here is some text in this dialog</div>
+    <button slot="buttons" onclick="document.querySelector('#myDialog').hide()">Extra</button>
+</x-dialog>
+``` 
+Note that clicking any custom buttons won't automatically hide the dialog. You have to handle that yourself.
 ## prettyPrint.js
 Pretty prints a JS-Object. Exports a `prettyPrint` function that generates a DOM for you, as well as `JSObject` class that does the same as a web-component.
 ```

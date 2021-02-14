@@ -9,16 +9,14 @@ export default class Dialog extends HTMLElement {
         this.dialog = document.createElement("dialog");
         this._shadow.appendChild(this.dialog);
 
-        const content = document.createElement("div");
-        content.classList.add("dialogContent");
-        this.dialog.appendChild(content);
-
         const slot = document.createElement("slot");
-        content.appendChild(slot);
+        this.dialog.appendChild(slot);
 
         const buttons = document.createElement("slot");
+        buttons.setAttribute("id", "buttonsSlot");
+        buttons.setAttribute("name", "buttons");
         buttons.classList.add("buttons");
-        content.appendChild(buttons);
+        this.dialog.appendChild(buttons);
 
         const cancel = document.createElement("button");
         buttons.appendChild(cancel);
@@ -28,7 +26,6 @@ export default class Dialog extends HTMLElement {
                 bubbles: true,
                 cancelable: true
             });
-            console.log(this.attributes, this.hasAttribute("oncancel"));
             if (this.hasAttribute("oncancel")) {
                 let f = new Function("event", '"use strict";' + this.getAttribute("oncancel"));
                 f(event);
@@ -64,26 +61,25 @@ export default class Dialog extends HTMLElement {
         });
 
         const style = document.createElement("style");
-        content.appendChild(style);
+        this.dialog.appendChild(style);
         style.textContent = `
-        dialog {
-            visibility: collapse;
+        :host {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background-color: rgba(0,0,0,0.5);
+            z-index: 0;
+            visibility: collapse;
             display: flex;
             align-items: center;
-            justify-content: center;;
+            justify-content: center;
         }
-        
-        dialog.open {
-            visibility: visible;
-        }
-        
-        .dialogContent {
+
+        dialog {
+            background-color: white;
+            display: flex;
             padding: 10px;
             background-color: white;
             border: 1px solid gray;
@@ -91,8 +87,16 @@ export default class Dialog extends HTMLElement {
             flex-direction: column;
             align-items: flex-end;
         }
+        
+        dialog > * {
+            z-index: 1;
+        }
 
-        .dialogContent::backdrop {
+        :host(.open) {
+            visibility: visible;
+        }
+        
+        dialog::backdrop {
             filter: blur(10);
         }
 
@@ -100,19 +104,16 @@ export default class Dialog extends HTMLElement {
             display: flex;
             flex-direction: row-reverse;
         }
-        dialog::background {
-            filter: blur(10);
-        }
         `;
     }
 
     show = () => {
-        this.dialog.classList.add("open");
-        this.dialog.setAttribute("open", true);
+        this.classList.add("open");
+        this.setAttribute("open", true);
     }
 
     hide = () => {
-        this.dialog.classList.remove("open");
-        this.dialog.removeAttribute("open");
+        this.classList.remove("open");
+        this.removeAttribute("open");
     }
 }
