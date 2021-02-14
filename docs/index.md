@@ -13,7 +13,7 @@ Creates a console like version of JS Objects, that can be expanded/shrunk.
 ### Code:
 <div id="complex-demo"></div>
 <script type="module">
-  import {JSObject} from 'https://cdn.jsdelivr.net/gh/wesj/web-components@main/prettyPrint.js'
+  import {JSObject} from 'https://cdn.jsdelivr.net/gh/wesj/web-components@main/src/prettyPrint.js'
   customElements.define('x-object', JSObject);
   class Class { foo = "bar" }
   let obj = new JSObject({
@@ -122,14 +122,14 @@ JSObject supports a few CSS-theming properties:
   <x-consoleitem level="debug" source="here.html">This is debug</x-consoleitem>
 </x-console>
 <script type="module">
-  import {Console, ConsoleItem} from 'https://cdn.jsdelivr.net/gh/wesj/web-components@main/Console.js';
+  import {Console, ConsoleItem} from 'https://cdn.jsdelivr.net/gh/wesj/web-components@main/src/onsole.js';
   customElements.define('x-console', Console);
   customElements.define('x-consoleitem', ConsoleItem);
 </script>
 ### Usage
 Import the web component and register it :) It exports two objects, Console and ConsoleItem. Console is the wrapper for individual ConsoleItems.
 ```
-import {Console, ConsoleItem} from './Console.js'
+import {Console, ConsoleItem} from './console.js'
 customElements.define('x-console', Console);
 customElements.define('x-consoleitem', ConsoleItem);
 ```
@@ -148,7 +148,7 @@ Then just use it in markup
 </x-dialog>
 <button onclick="document.querySelector('#myDialog').show()">Show Dialog</button>
 <script type="module">
-import Dialog from 'https://cdn.jsdelivr.net/gh/wesj/web-components@main/dialog.js';
+import Dialog from 'https://cdn.jsdelivr.net/gh/wesj/web-components@main/src/dialog.js';
 customElements.define('x-dialog', Dialog);
 </script>
 ### Usage
