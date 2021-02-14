@@ -12,43 +12,18 @@ x-console {
         </style>
         <script type="module">
 import {Console, ConsoleItem} from './Console.js';
-import {JSObject} from '../ObjectPrinter/prettyPrint.js';
+import {JSObject} from './prettyPrint.js';
+import Dialog from './dialog.js';
 
-function addItem(options, c) {
-    let item = new ConsoleItem();
-    item.setAttribute("level", options.level || "info");
-    item.textContent = options.message || "This is an info log message";
-    item.setAttribute("source", options.source || "showcase.html");
-    item.setAttribute("time", options.time || Date.now());
-    c.appendChild(item);
-}
+customElements.define('x-console', Console);
+customElements.define('x-consoleitem', ConsoleItem);
+customElements.define('x-js', JSObject);
+customElements.define('x-dialog', Dialog);
 
 function start() {
-    customElements.define('x-console', Console);
-    customElements.define('x-consoleitem', ConsoleItem);
-    customElements.define('x-js', JSObject);
-
-    let c = new Console();
-    document.body.appendChild(c);
-
-    addItem({level: "error", message: "This is an error", source: "foo.html:123"}, c);
-    addItem({level: "info", message: "This is info"}, c);
-    addItem({level: "warn", message: "This is a warning"}, c);
-    addItem({level: "debug", message: "This is debug logging"}, c);
-
-    let item = new ConsoleItem();
-    item.setAttribute("level", "info");
-    let pretty = new JSObject();
-    pretty.obj = {
-        foo: "bar",
-        "bar": {
-            date: new Date()
-        }
-    };
-    item.appendChild(pretty);
-    item.setAttribute("source", "showcase.html");
-    item.setAttribute("time", Date.now());
-    c.appendChild(item);
+    let dialog = document.getElementById("myDialog");
+    dialog.addEventListener("commit", (e) => { console.log("commit 2"); } );
+    dialog.addEventListener("cancel", (e) => { console.log("cancel 2"); } );
 }
 
 window.addEventListener("load", start);
@@ -56,5 +31,17 @@ window.addEventListener("load", start);
     </head>
 
     <body>
+        <x-js>{"Hello": "World"}</x-js>
+        <x-console>
+            <x-consoleitem level="info" source="here.html" >This is info</x-consoleitem>
+            <x-consoleitem level="error" source="here.html">This is an error</x-consoleitem>
+            <x-consoleitem level="warn" source="here.html">This is a warning</x-consoleitem>
+            <x-consoleitem level="debug" source="here.html">This is debug</x-consoleitem>
+            <x-consoleitem level="debug" source="here.html"><x-js>{"foo": "bar", "baz": 1234}</x-js></x-consoleitem>
+        </x-console>
+        <x-dialog id="myDialog" oncommit="console.log('commit')" oncancel="console.log('cancel')" >
+            <div>Here is some text in this dialog</div>
+        </x-dialog>
+        <button onclick="document.querySelector('#myDialog').show()">Show Dialog</button>
     </body>
 </html>
