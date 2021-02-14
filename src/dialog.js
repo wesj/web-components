@@ -100,7 +100,9 @@ export default class Dialog extends HTMLElement {
             display: flex;
             flex-direction: row-reverse;
         }
-
+        dialog::background {
+            filter: blur(10);
+        }
         `;
     }
 
