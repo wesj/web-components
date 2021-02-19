@@ -1,10 +1,8 @@
 export default class Dialog extends HTMLElement {
-    dialog = null;
-
     constructor(options = {}) {
         super();
 
-        this._shadow = this.attachShadow({mode: 'open'});
+        this._shadow = this.attachShadow({mode: "open"});
 
         this.dialog = document.createElement("dialog");
         this._shadow.appendChild(this.dialog);
@@ -22,12 +20,12 @@ export default class Dialog extends HTMLElement {
         buttons.appendChild(cancel);
         cancel.textContent = options.cancelText || "Cancel";
         cancel.addEventListener("click", () => {
-            const event = new CustomEvent('cancel', {
+            const event = new CustomEvent("cancel", {
                 bubbles: true,
                 cancelable: true
             });
             if (this.hasAttribute("oncancel")) {
-                let f = new Function("event", '"use strict";' + this.getAttribute("oncancel"));
+                let f = new Function("event", "\"use strict\";" + this.getAttribute("oncancel"));
                 f(event);
                 if (event.defaultPrevented) {
                     return;
@@ -43,12 +41,12 @@ export default class Dialog extends HTMLElement {
         buttons.appendChild(commit);
         commit.textContent = options.commitText || "OK";
         commit.addEventListener("click", async () => {
-            const event = new CustomEvent('commit', {
+            const event = new CustomEvent("commit", {
                 bubbles: true,
                 cancelable: true
             });
             if (this.hasAttribute("oncommit")) {
-                let f = new Function("event", '"use strict";' + this.getAttribute("oncommit"));
+                let f = new Function("event", "\"use strict\";" + this.getAttribute("oncommit"));
                 f(event);
                 if (event.defaultPrevented) {
                     return;
@@ -107,12 +105,12 @@ export default class Dialog extends HTMLElement {
         `;
     }
 
-    show = () => {
+    show() {
         this.classList.add("open");
         this.setAttribute("open", true);
     }
 
-    hide = () => {
+    hide() {
         this.classList.remove("open");
         this.removeAttribute("open");
     }

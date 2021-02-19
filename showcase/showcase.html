@@ -14,16 +14,79 @@ x-console {
 import {Console, ConsoleItem} from '../src/Console.js';
 import {JSObject} from '../src/prettyPrint.js';
 import Dialog from '../src/dialog.js';
+import List from '../src/list.js';
 
 customElements.define('x-console', Console);
 customElements.define('x-consoleitem', ConsoleItem);
 customElements.define('x-js', JSObject);
 customElements.define('x-dialog', Dialog);
+customElements.define('x-list', List);
+
+export class Builder {
+    emptyView() {
+        let div = document.createElement("li");
+        div.textContent = "Nothing in here";
+        return div;
+    }
+    numberOfRows() {
+        return 100;
+    }
+
+    viewTypeAt(i) {
+        return 0;
+    }
+
+    viewAtIndex(i, recycle) {
+        // console.log("Build view", recycle);
+        let view = recycle || document.createElement("li");
+        view.textContent = "View " + i;
+        return view;
+    }
+}
+
+export class Layout {
+    constructor(builder) {
+        this.builder = builder;
+        this._cachedHeight = 0;
+        this._cachedWidth = 0;
+    }
+
+    expectedSizeAt(i, view) {
+        if (!this._cachedWidth || !this._cachedHeight) {
+            this._cachedHeight = view.offsetHeight || 20;
+            this._cachedWidth = view.offsetWidth || 20;
+        }
+        return { width: this._cachedWidth, height: this._cachedHeight };
+    }
+
+    positionAt(i, view) {
+        let expected = this.expectedSizeAt(i);
+        return {
+            x: 0,
+            y: expected.height * i,
+            width: expected.width,
+            height: expected.height
+        }
+    }
+
+    listSize() {
+        return {
+            width: 20 * 100,
+            height: 20 * 100
+        } 
+    }
+}
 
 function start() {
     let dialog = document.getElementById("myDialog");
     dialog.addEventListener("commit", (e) => { console.log("commit 2"); } );
     dialog.addEventListener("cancel", (e) => { console.log("cancel 2"); } );
+
+    let list = document.getElementById("myList");
+    let builder = new Builder();
+    let layout = new Layout(builder);
+    list.setup(builder, layout);
+    
 }
 
 window.addEventListener("load", start);
@@ -44,5 +107,7 @@ window.addEventListener("load", start);
             <button slot="buttons" onclick="document.querySelector('#myDialog').hide()">Extra</button>
         </x-dialog>
         <button onclick="document.querySelector('#myDialog').show()">Show Dialog</button>
+
+        <x-list style="display: block; border: 1px solid black; height: 100px; width: 100%" id="myList"></x-list>
     </body>
 </html>
