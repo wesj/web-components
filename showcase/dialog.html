@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <link rel='stylesheet' type='text/css' href='showcase.css'> 
+        <script type="module">
+import Dialog from '../src/dialog.js';
+import DemoSection from './DemoSection.js';
+customElements.define('x-dialog', Dialog);
+        </script>
+    </head>
+    <body>
+        <h1>Dialog</h1>
+        <h2>Description</h2>
+        <p>A JS Dialog</p>
+        <h2>Demos</h2>
+        <x-demo>
+            <x-dialog id="myDialog" oncommit="console.log('commit')" oncancel="console.log('cancel')" >
+                <div>Here is some text in this dialog</div>
+                <button slot="buttons" onclick="document.querySelector('#myDialog').hide()">Extra</button>
+            </x-dialog>
+            <button onclick="document.querySelector('#myDialog').show()">Show Dialog</button>
+        </x-demo>
+        <h2>Events</h2>
+        None (yet).
+        <h2>Slots</h2>
+        None
+        <h2>Parts</h2>
+        None
+    </body>
+</html>

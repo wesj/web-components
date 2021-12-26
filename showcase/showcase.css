@@ -1,0 +1,45 @@
+html, body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+body {
+    padding: 0.5em;
+    width: calc(100% - 1em);
+}
+
+table {
+    margin: 20px 0;
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    display: table;
+    border: 1px solid #ccc;
+}
+
+tr:nth-child(2n+1) {
+    background-color: white;
+    border-bottom: 1px solid gray;
+    box-sizing: inherit;
+    display: table-row;
+    vertical-align: inherit;
+}
+
+tr:nth-child(2n) {
+    background-color: lightgray;
+}
+
+th, td {
+    padding-left: 16px;
+    padding: 8px 8px;
+    padding-left: 8px;
+    display: table-cell;
+    text-align: left;
+    vertical-align: top;
+    box-sizing: inherit;
+    display: table-cell;
+    vertical-align: inherit;
+    text-align: unset;
+}
+
+.example { padding: 1em; }

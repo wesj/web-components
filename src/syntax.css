@@ -1,0 +1,39 @@
+:host {
+    border: 1px solid lightgray;
+    display: block;
+    overflow: auto;
+}
+
+ul {
+    list-style-type: none;
+    list-style-image: none;
+    font-family: 'Courier New', Courier, monospace;
+    padding: 0;
+    margin: 0;
+    counter-reset: line;
+}
+
+li {
+    white-space: pre;
+    border-bottom: 1px solid lightgray;
+    padding-left: 2.5em;
+}
+
+.bracket { color: darkred; }
+.nodeName { color: darkred; }
+.attributeName { color: red; }
+.attributeValue { color: blue; }
+.other { color: black; }
+
+li::before {
+    z-index: 0;
+    width: 2em;
+    text-align: right;
+    display: inline-block;
+    counter-increment: line;
+    content: counter(line);
+    background-color: lightgray;
+    padding: 0.0625em 0.25em;
+    position: absolute;
+    left: calc(0.5em + 1px);
+}

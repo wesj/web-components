@@ -1,0 +1,99 @@
+:host {
+    --resizer-size: 5px;
+    position: fixed;
+    display: block;
+    border-radius: 5px;
+    overflow: hidden;
+
+    background-color: white;
+    position: absolute;
+    top: 100px;
+    left: 100px;
+    width: 400px;
+    height: 400px;
+    border: 1px solid black;
+    border-radius: 4px;
+    box-shadow: 0px 3px 3px rgba(0,0,0,0.25);
+}
+
+x-titlebar {
+    padding: 0.5em;
+    background-color: ActiveCaption;
+    color: CaptionText;
+}
+
+.content {
+    width: 100%;
+    height: calc(100% - 1.5em);
+    position: relative;
+}
+
+.scrollbar {
+    cursor: pointer;
+    position: absolute;
+    min-width: 10px;
+    min-height: 10px;
+    border-radius: 10px;
+    background-color: rgba(0,0,0,0.5);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+}
+.resizer {
+    position: absolute;
+}
+
+.scrollbar.bottom {
+    bottom: 5px;
+    left: 5px;
+}
+
+.scrollbar.right {
+    top: 5px;
+    right: 5px;
+}
+
+.resizer.top {
+    height: var(--resizer-size);
+    top: 0;
+    cursor: ns-resize;
+}
+
+.resizer.bottom:not(.left, .right),
+.resizer.top:not(.left, .right) {
+    left: var(--resizer-size);
+    width: calc(100% - 2 * var(--resizer-size));
+}
+
+.resizer.left:not(.top, .bottom),
+.resizer.right:not(.top, .bottom) {
+    top: var(--resizer-size);
+    height: calc(100% - 2 * var(--resizer-size));
+}
+
+.resizer.left {
+    width: var(--resizer-size);
+    left: 0;
+    cursor: ew-resize;
+}
+
+.resizer.bottom {
+    height: var(--resizer-size);
+    bottom: 0;
+    cursor: ns-resize;
+}
+
+.resizer.right {
+    width: var(--resizer-size);
+    right: 0;
+    cursor: ew-resize;
+}
+
+.resizer.top.left,
+.resizer.bottom.right {
+    cursor: nw-resize;
+}
+
+.resizer.top.right,
+.resizer.bottom.left {
+    cursor: ne-resize;
+}
+

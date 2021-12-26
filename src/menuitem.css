@@ -1,0 +1,24 @@
+:host {
+    min-width: 100px;
+    display: block;
+}
+
+button {
+    text-align: left;
+    display: block;
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    padding: 5px;
+}
+
+button:hover {
+    background-color: rgba(0,0,0,0.25);
+}
+
+hr {
+    padding: 0;
+    margin: 0;
+    border: none;
+    border-bottom: 1px solid rgba(0,0,0,0.25);
+}

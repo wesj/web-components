@@ -1,0 +1,164 @@
+<html>
+    <head>
+        <link rel='stylesheet' type='text/css' href='showcase.css'> 
+        <style>
+            x-tab {
+                border: 1px solid lightgray;
+            }
+
+            .tab { 
+                min-height: 100px;
+                width: 100%;
+            }
+            .red { background-color: red; }
+            .orange { background-color: orange; }
+            .yellow { background-color: yellow; }
+            .green { background-color: green; }
+            .blue { background-color: blue; }
+            .purple { background-color: purple; }
+        </style>
+        <script type="module">
+import Syntax from '../src/Syntax.js';
+import DemoSection from './DemoSection.js';
+        </script>
+    </head>
+    <body>
+        <h1>Tabs</h1>
+        <h2>Description</h2>
+        <p>Tabs</p>
+        <h2>Demos</h2>
+<h2>Basic usage</h2>
+        <x-demo>
+<x-tabs>
+    <x-tab title="Red" class="tab red"></x-tab>
+    <x-tab title="Orange" class="tab orange"></x-tab>
+    <x-tab title="Yellow" class="tab yellow"></x-tab>
+    <x-tab title="Green" class="tab green"></x-tab>
+    <x-tab title="Blue" class="tab blue"></x-tab>
+    <x-tab title="Purple" class="tab purple"></x-tab>
+</x-tabs>
+        </x-demo>
+
+        <h2>Attributes</h2>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>tab-template</td>
+                <td>The template to use for each tab. You can use this for customer rendering.
+                <ul>
+                    <li>Inside the template, you can use the <code>{title}</code> string to insert title text.</li>
+                    <li>The <code>index</code> property will be set on each tab.</li>
+                </ul>
+                </td>
+            </tr>
+        </table>
+<template id="myTab">
+    <style>
+        .tab {
+            background-color: white;
+            padding: 10px;
+            cursor: pointer;
+            text-align: center;
+            flex: 1;
+        }
+        .tab:hover { background-color: black; color: white; }
+        .tab[index="0"].selected { background-color: red; }
+        .tab[index="1"].selected { background-color: orange; }
+        .tab[index="2"].selected { background-color: yellow; }
+        .tab[index="3"].selected { background-color: green; }
+        .tab[index="4"].selected { background-color: blue; }
+        .tab[index="5"].selected { background-color: purple; }
+    </style>
+    <div class="tab">Tab {title}</div>
+</template>
+
+<x-tabs tab-template="myTab" style="flex-direction: row;">
+    <x-tab title="Red" class="tab red"></x-tab>
+    <x-tab title="Orange" class="tab orange"></x-tab>
+    <x-tab title="Yellow" class="tab yellow"></x-tab>
+    <x-tab title="Green" class="tab green"></x-tab>
+    <x-tab title="Blue" class="tab blue"></x-tab>
+    <x-tab title="Purple" class="tab purple"></x-tab>
+</x-tabs>
+        </x-demo>
+        <h2>Slots</h2>
+        None
+        <h2>Parts</h2>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>tabs</td>
+                <td>The box containing tabs</td>
+            </tr>
+            <tr>
+                <td>tab</td>
+                <td>Each individual tab</td>
+            </tr>
+            <tr>
+                <td>selected</td>
+                <td>A selected tab</td>
+            </tr>
+        </table>
+        <x-demo>
+            <style scoped="true">
+                #demo3::part(tab) {
+                    margin: 5px;
+                    border-radius: 1em;
+                    border: 1px solid transparent;
+                }
+                #demo3::part(tab):hover {
+                    background-color: black;
+                    color: white;
+                    border: 1px solid lightgray;
+                }
+                #demo3::part(selected) {
+                    background-color: black;
+                    color: white;
+                    border: 1px solid black;
+                }
+            </style>
+            <x-tabs id="demo3">
+                <x-tab title="Red" class="tab red"></x-tab>
+                <x-tab title="Orange" class="tab orange"></x-tab>
+                <x-tab title="Yellow" class="tab yellow"></x-tab>
+                <x-tab title="Green" class="tab green"></x-tab>
+                <x-tab title="Blue" class="tab blue"></x-tab>
+                <x-tab title="Purple" class="tab purple"></x-tab>
+            </x-tabs>            
+        </x-demo>
+
+        <h2>Events</h2>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>Focus</td>
+                <td>Fired on the content when a tab is selected</td>
+            </tr>
+            <tr>
+                <td>Blur</td>
+                <td>Fired on the content when a tab is hidden</td>
+            </tr>
+        </table>
+        <x-demo>
+            <script type="text/javascript">
+                function onFocus(event) { console.log("Focus", event); }
+                function onBlur(event) { console.log("Blur", event); }
+            </script>
+            <x-tabs id="demo4">
+                <x-tab title="One"
+                       onfocus="onFocus(event)"
+                       onblur="onBlur(event)">One</x-tab>
+                <x-tab title="Two">Two</x-tab>
+            </x-tabs>            
+        </x-demo>
+    </body>
+</html>

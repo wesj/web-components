@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <link rel='stylesheet' type='text/css' href='showcase.css'> 
+        <style type="text/css">
+#content {
+    padding: 0.5em;
+}
+x-window {
+    box-shadow: 0px 5px 10px rgba(0,0,0,0.5);
+}
+        </style>
+        <script type="module">
+import Window from '../src/window.js';
+import DemoSection from './DemoSection.js';
+let index = 1;
+window.addWindow = function (event) {
+    let d = new Window();
+    d.setAttribute("title", "Window " + (index++));
+    document.body.appendChild(d);
+}
+        </script>
+        <script type="application/javascript">
+function removeWindow(event) {
+    let d = document.querySelector('#myWindow');
+    d.parentNode.removeChild(d);
+}
+        </script>
+    </head>
+    <body>
+        <h1>Window</h1>
+        <h2>Description</h2>
+        <p>A JS Window</p>
+        <h2>Demos</h2>
+        <x-demo>
+            <x-window id="myWindow" title="Window title">
+                <div id="content">
+                    <div>Here is some text in this Window</div>
+                    <button onclick="removeWindow(event);">Hide</button>
+                </div>
+            </x-window>
+            <button onclick="addWindow(event);">Add</button>
+        </x-demo>
+        <h2>Events</h2>
+        None (yet).
+        <h2>Slots</h2>
+        None
+        <h2>Parts</h2>
+        None
+    </body>
+</html>

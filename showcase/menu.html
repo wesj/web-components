@@ -1,0 +1,48 @@
+<html>
+    <head>
+        <link rel='stylesheet' type='text/css' href='showcase.css'> 
+        <style>
+            x-menu {
+                display: block;
+                height: 2em;
+            }
+        </style>
+        <script type="module">
+import Menu from '../src/menu.js';
+import MenuItem from '../src/menuitem.js';
+import MenuSeparator from '../src/menuseparator.js';
+import Toolbar from '../src/toolbar.js';
+import DemoSection from './DemoSection.js';
+        </script>
+    </head>
+    <body>
+        <h1>Menu</h1>
+        <h2>Description</h2>
+        <p>A menu</p>
+        <h2>Demos</h2>
+        <x-demo>
+            <x-toolbar>
+                <x-menu title="File">
+                    <x-menuitem accesskey="s">Save</x-menuitem>
+                    <x-menuitem accesskey="c">Close</x-menuitem>
+                    <x-menuseparator></x-menuseparator>
+                    <x-menuitem accesskey="x">Exit</x-menuitem>
+                </x-menu>
+                <x-menu title="Edit">
+                    <x-menuitem accesskey="s">Cut</x-menuitem>
+                    <x-menuitem accesskey="c">Copy</x-menuitem>
+                    <x-menuitem accesskey="x">Paste</x-menuitem>
+                </x-menu>
+                <x-menu title="Help">
+                    <x-menuitem accesskey="x">About</x-menuitem>
+                </x-menu>
+            </x-toolbar>
+        </x-demo>
+        <h2>Events</h2>
+        None (yet).
+        <h2>Slots</h2>
+        None
+        <h2>Parts</h2>
+        None
+    </body>
+</html>

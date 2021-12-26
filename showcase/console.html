@@ -1,0 +1,44 @@
+<html>
+    <head>
+        <link rel='stylesheet' type='text/css' href='showcase.css'> 
+        <style>
+            x-console {
+                width: 100%;
+                display: block;
+            }
+        </style>
+        <script type="module">
+import {Console, ConsoleItem} from '../src/Console.js';
+import {JSObject} from '../src/prettyPrint.js';
+import DemoSection from './DemoSection.js';
+customElements.define('x-js', JSObject);
+customElements.define('x-console', Console);
+customElements.define('x-consoleitem', ConsoleItem);
+        </script>
+    </head>
+    <body>
+        <h1>Console</h1>
+        <h2>Description</h2>
+        <p>A JS Console</p>
+        <h2>Code</h2>
+        <code>
+
+        </code>
+        <h2>Demos</h2>
+        <x-demo>
+            <x-console>
+                <x-consoleitem level="info" source="here.html" >This is info</x-consoleitem>
+                <x-consoleitem level="error" source="here.html">This is an error</x-consoleitem>
+                <x-consoleitem level="warn" source="here.html">This is a warning</x-consoleitem>
+                <x-consoleitem level="debug" source="here.html">This is debug</x-consoleitem>
+                <x-consoleitem level="debug" source="here.html"><x-js>{"foo": "bar", "baz": 1234}</x-js></x-consoleitem>
+            </x-console>
+        </x-demo>
+        <h2>Events</h2>
+        None (yet).
+        <h2>Slots</h2>
+        None
+        <h2>Parts</h2>
+        None
+    </body>
+</html>

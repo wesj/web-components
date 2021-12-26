@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <link rel='stylesheet' type='text/css' href='showcase.css'> 
+        <script type="module">
+import {JSObject} from '../src/prettyPrint.js';
+import DemoSection from './DemoSection.js';
+customElements.define('x-js', JSObject);
+        </script>
+    </head>
+    <body>
+        <h1>JSON</h1>
+        <h2>Description</h2>
+        <p>This JSON component is used for displaying JSON objects.</p>
+        <h2>Demos</h2>
+        <x-demo>
+            <x-js>{
+                "Hello": "World",
+                "Array": [1,2,3],
+                "Object": { "foo": "bar" }
+            }</x-js>
+        </x-demo>
+        <h2>Events</h2>
+        None (yet).
+        <h2>Slots</h2>
+        None
+        <h2>Parts</h2>
+        None
+    </body>
+</html>

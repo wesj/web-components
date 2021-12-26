@@ -1,0 +1,100 @@
+<html>
+    <head>
+        <link rel='stylesheet' type='text/css' href='showcase.css'>
+        <style type=""text/css">
+            x-titlebar {
+                background-color: ActiveCaption;
+                color: CaptionText;
+                padding-left: 0.5em;
+                border-radius: 4px 4px 0px 0px;
+            }
+            x-titlebar::part(button) {
+                color: CaptionText;
+                padding: 0.5em;
+            }
+        </style>
+        <script type="module">
+import Titlebar from '../src/titlebar.js';
+import DemoSection from './DemoSection.js';
+        </script>
+    </head>
+    <body>
+        <h1>Titlebar</h1>
+        <h2>Description</h2>
+        <p>A titlebar used for the window implementation. Extends Draggable.</p>
+        <h2>Demos</h2>
+        <x-demo>
+            <x-titlebar buttons="minimize, close">Title</x-titlebar>
+        </x-demo>
+
+        <h2>Parts</h2>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>buttons</td>
+                <td>Container for buttons</td>
+            </tr>
+            <tr>
+                <td>button</td>
+                <td>Applied to the built in buttons when show</td>
+            </tr>
+            <tr>
+                <td>close</td>
+                <td>Applied to the close button when shown</td>
+            </tr>
+            <tr>
+                <td>minimize</td>
+                <td>Applied to the maximize button whe shown</td>
+            </tr>
+            <tr>
+                <td>maximize</td>
+                <td>Fired when the minimize button is tapped.</td>
+            </tr>
+        </table>
+
+        <h2>Slots</h2>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>buttons</td>
+                <td>Container for buttons</td>
+            </tr>
+        </table>
+
+        <h2>Events</h2>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>close</td>
+                <td>Fired when the close button is tapped.</td>
+            </tr>
+            <tr>
+                <td>minimize</td>
+                <td>Fired when the minimize button is tapped.</td>
+            </tr>
+        </table>
+        <x-demo>
+            <script type="text/javascript">
+                function onMinimize(event) { alert("Minimize"); }
+                function onClose(event) { alert("Close"); }
+            </script>
+            <x-tabs id="demo4">
+                <x-titlebar
+                    buttons="minimize,close"
+                    onminimize="onMinimize(event)"
+                    onclose="onClose(event)">Title
+                    <button slot="buttons">+</button>
+                </x-titlebar>
+            </x-tabs>            
+        </x-demo>
+    </body>
+</html>
