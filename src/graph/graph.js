@@ -1,5 +1,6 @@
 import Renderer from "./renderer.js";
 import Axis from "./axis.js";
+import Annotation from "./annotation.js";
 
 export default class Graph extends HTMLElement {
     constructor() {
@@ -31,6 +32,48 @@ export default class Graph extends HTMLElement {
         }
     }
 
+    requestMousePosition() {
+        if (!this.mouse) {
+            this.mouse = true;
+            this.addEventListener("mousemove", (event) => {
+                this.mouseMove(event);
+            });
+        }
+    }
+
+    mouseMove(event) {
+        let box = this.getBoundingClientRect();
+        let x = event.clientX - box.left;
+        let y = event.clientY - box.top;
+        x = this.renderer.xAxis.toCanvasCoords(x, this.clientWidth);
+        y = this.renderer.yAxis.toCanvasCoords(y, this.clientHeight);
+
+        let nearest = null;
+        for (var i = 0; i < this.childNodes.length; i++) {
+            let child = this.childNodes[i];
+            if (child.findNearest) {
+                let near = child.findNearest(x, y);
+                if (near) {
+                    if (!nearest || near.distance < nearest.distance) {
+                        nearest = near;
+                    }
+                }
+            }
+        }
+
+        if (nearest) {
+            this.renderer.currentX = nearest.position.x;
+            this.renderer.currentY = nearest.position.y;
+
+            for (var i = 0; i < this.childNodes.length; i++) {
+                let child = this.childNodes[i];
+                if (child instanceof Annotation) {
+                    child.render(this.renderer);
+                }
+            }
+        }
+    }
+
     setup() {
         for (var i = 0; i < this.childNodes.length; i++) {
             let child = this.childNodes[i];
@@ -39,6 +82,10 @@ export default class Graph extends HTMLElement {
                 let y = this.getYAxisFor(child);
                 x.setup(child);
                 y.setup(child, x.values);
+            }
+
+            if (child.setup) {
+                child.setup(this);
             }
         }
     }

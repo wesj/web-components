@@ -26,6 +26,34 @@ export default class LineGraph extends GraphNode {
         return false;
     }
 
+    findNearest(x, y) {
+        let nearestX = null;
+        let distance = null;
+
+        if (typeof x === "number") {
+            let keys = Object.keys(this.points);
+            keys.forEach((key) => {
+                let d = Math.abs(x - key);
+                if (distance === null) {
+                    distance = d;
+                    nearestX = key;
+                } else {
+                    if (d < distance) {
+                        nearestX = key;
+                        distance = d;
+                    }
+                }
+            });
+        }
+
+        let dx = nearestX - x;
+        let dy = this.points[nearestX] - y;
+        return {
+            position: { x: nearestX, y: this.points[nearestX] },
+            distance: dx * dx + dy * dy
+        };
+    }
+
     drawDiscs(renderer, x, y) {
         renderer.fillPath(() => {
             renderer.arc(x, y, this.radius, 0, Math.PI * 2);

@@ -53,6 +53,34 @@ export default class Axis extends GraphNode {
         return this._ticks || "grid";
     }
 
+     toCanvasCoords(value, realSize) {
+        let offset = 0;
+        if (this.min === 0 && this.labels) {
+            // TODO: This needs to be smarter on the right side
+            offset = this.fontSize * 2;
+        }
+
+        let scale = (realSize - 2 * offset) / (this.max - this.min);
+
+        // Flip the y-axis
+        let ret = value;
+        if (this.direction == Directions.Y) {
+            ret += offset - realSize;
+            ret = ret / scale / -1 + this.min;
+        } else {
+            ret -= offset;
+            ret = ret / scale + this.min;
+        }
+
+        // Convert an int to a string if we have a values list
+        if (!this._valuesAreNumbers && this.values.length) {
+            ret = Math.round(ret);
+            return this.values[ret];
+        }
+
+        return ret;
+    }
+
     _coord_cache = {}
     toScreenCoords(originalValue, realSize, skipTransform) {
         let values = this.values;

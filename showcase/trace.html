@@ -7,6 +7,16 @@ import LineGraph from '../src/graph/line_graph.js';
 import Annotation from '../src/graph/annotation.js';
 import DemoSection from './DemoSection.js';
         </script>
+        <style type="text/css">
+x-graph > x-annotation {
+    opacity: 0.0;
+    transition: opacity 1000ms, top 250ms, left 250ms, display 0ms;
+}
+
+x-graph:hover > x-annotation {
+    opacity: 1.0;
+}
+        </style>
     </head>
     <body>
         <h1>Annotation</h1>
@@ -17,7 +27,8 @@ import DemoSection from './DemoSection.js';
             <x-data>
                 [1,2,3,4,5]
             </x-data>
-            <x-annotation style="padding: 5px; background-color: purple; color: white; border-radius:3px;" x="1" y="2">This is at (1, 2)</x-annotation>
+            <x-annotation style="padding: 5px; background-color: purple; color: white; border-radius:3px;" x="1" y="2">This is at (1, 2) <input></x-annotation>
+            <x-annotation style="padding: 5px; background-color: darkblue; color: white; border-radius:3px;" x="current" y="current">This is at ({current.x}, {current.y})</x-annotation>
         </x-graph>
         <h2>Events</h2>
         None (yet).
