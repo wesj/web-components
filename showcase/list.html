@@ -1,0 +1,248 @@
+<html>
+    <head>
+        <link rel='stylesheet' type='text/css' href='showcase.css'> 
+        <style>
+x-list {
+    overflow: scroll;
+    width: 100%;
+}
+        </style>
+        <script type="module">
+import List, {ArrayAdapter, GridAdapter, GridLayout, LinearLayout} from '../src/list.js';
+import DemoSection from './DemoSection.js';
+class MyArrayAdapter extends ArrayAdapter {
+    recycle(row, i) {
+        super.recycle(row, i);
+        row.style.backgroundColor = i % 2 == 0 ? "gray" : "lightgray";
+        row.style.padding = "1em";
+    }
+}
+window.horizontalLayout = new LinearLayout({
+    direction: "horizontal",
+})
+
+window.linearAdapter = new MyArrayAdapter([
+    "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"
+]);
+let data = [];
+for (var i = 0; i < 1000; i++) {
+    data.push({
+        foo: "bar",
+        1: i,
+        2: i * 2,
+        3: i * 3,
+        something: "else"
+    })
+}
+window.gridAdapter = new GridAdapter(data, {})
+window.gridLayout = new GridLayout({
+    stickyCols: [0],
+    stickyRows: [0]
+});
+    </script>
+    </head>
+    <body>
+        <h1>List</h1>
+        <h2>Description</h2>
+        <p>A list</p>
+        <h2>Demos</h2>
+        <x-demo>
+            <x-list style="height: 40px"></x-list>
+        </x-demo>
+        <x-demo>
+            <x-list adapter="linearAdapter" style="height: 200px" sticky="0"></x-list>
+        </x-demo>
+        <x-demo>
+            <x-list adapter="linearAdapter" layout="horizontalLayout" sticky="0" style="height: 80px"></x-list>
+        </x-demo>
+        <x-demo>
+            <x-list adapter="gridAdapter"
+                layout="gridLayout"
+                style="height: 200px"></x-list>
+        </x-demo>
+
+        <h2>Events</h2>
+        None (yet).
+
+        <h2>Slots</h2>
+        None
+
+        <h2>Parts</h2>
+        None
+    </body>
+</html>
+
+<!--
+autoGenerateColumns: false,
+allowAddNew: true,
+allowDelete: true,
+allowPinning: wjcGrid.AllowPinning.SingleColumn,
+newRowAtTop: true,
+showMarquee: true,
+selectionMode: wjcGrid.SelectionMode.MultiRange,
+validateEdits: false,
+            columns: [
+                { binding: 'id', header: 'ID', width: 70, isReadOnly: true },
+                {
+                    binding: 'date', header: 'Date', format: 'MMM d yyyy', isRequired: false, width: 130,
+                    editor: new wjcInput.InputDate(document.createElement('div'), {
+                        format: 'MM/dd/yyyy',
+                        isRequired: false
+                    })
+                },
+                {
+                    binding: 'countryId', header: 'Country', dataMap: this._countryMap, width: 145,
+                    cellTemplate: (ctx) => {
+                        const dataItem = ctx.row.dataItem;
+                        if (wjcCore.isUndefined(dataItem) || dataItem === null) {
+                            return '';
+                        }
+                        const country = this._getCountry(ctx.item);
+                        return `<span class="flag-icon flag-icon-${country.flag}"></span> ${country.name}`;
+                    }
+                },
+                { binding: 'price', header: 'Price', format: 'c', isRequired: false, width: 100 },
+                {
+                    binding: 'history', header: 'History', width: 180, align: 'center', allowSorting: false,
+                    cellTemplate: this._historyCellTemplate
+                },
+                {
+                    binding: 'change', header: 'Change', align: 'right', width: 115,
+                    cellTemplate: (ctx) => {
+                        const dataItem = ctx.row.dataItem;
+                        if (wjcCore.isUndefined(dataItem) || dataItem === null) {
+                            return '';
+                        }
+                        const cls = this._getChangeCls(ctx.value);
+                        const value = this._formatChange(ctx.value);
+                        return `<span class="${cls}">${value}</span>`;
+                    }
+                },
+                {
+                    binding: 'rating', header: 'Rating', width: 180, align: 'center', cssClass: 'cell-rating',
+                    cellTemplate: this._ratingCellTemplate
+                },
+                {
+                    binding: 'time', header: 'Time', format: 'HH:mm', isRequired: false, width: 95,
+                    editor: new wjcInput.InputTime(document.createElement('div'), {
+                        format: 'HH:mm',
+                        isRequired: false
+                    })
+                },
+                {
+                    binding: 'colorId', header: 'Color', dataMap: this._colorMap, width: 145,
+                    cellTemplate: (ctx) => {
+                        const dataItem = ctx.row.dataItem;
+                        if (wjcCore.isUndefined(dataItem) || dataItem === null) {
+                            return '';
+                        }
+                        const color = this._getColor(ctx.item);
+                        return `<span class="color-tile" style="background: ${color.value}"></span> ${color.value}`;
+                    }
+                },
+                { binding: 'productId', header: 'Product', dataMap: this._productMap, width: 145 },
+                { binding: 'discount', header: 'Discount', format: 'p0', width: 130 },
+                { binding: 'active', header: 'Active', width: 100 }
+            ]
+        });
+        // create the grid search box
+        new wjcGridSearch.FlexGridSearch('#theSearch', {
+            placeholder: 'Search',
+            grid: this._theGrid,
+            cssMatch: ''
+        });
+        // adds Excel-like filter
+        new wjcGridFilter.FlexGridFilter(this._theGrid, {
+            filterColumns: [
+                'id', 'date', 'time', 'countryId', 'productId',
+                'colorId', 'price', 'change', 'discount', 'rating', 'active'
+            ]
+        });
+        // adds group panel
+        new wjcGridGroupPanel.GroupPanel('#theGroupPanel', {
+            placeholder: 'Drag columns here to create groups',
+            grid: this._theGrid
+        });
+    }
+    _getCountry(item) {
+        const country = this._countryMap.getDataItem(item.countryId);
+        return country ? country : Country.NotFound;
+    }
+    _getColor(item) {
+        const color = this._colorMap.getDataItem(item.colorId);
+        return color ? color : KeyValue.NotFound;
+    }
+    _getChangeCls(value) {
+        if (wjcCore.isNumber(value)) {
+            if (value > 0) {
+                return 'change-up';
+            }
+            if (value < 0) {
+                return 'change-down';
+            }
+        }
+        return '';
+    }
+    _formatChange(value) {
+        if (wjcCore.isNumber(value)) {
+            return wjcCore.Globalize.formatNumber(value, 'c');
+        }
+        if (!wjcCore.isUndefined(value) && value !== null) {
+            return wjcCore.changeType(value, wjcCore.DataType.String);
+        }
+        return '';
+    }
+    _exportToExcel() {
+        const ctx = this._excelExportContext;
+        if (!ctx.exporting) {
+            this._exportSvc.startExcelExport(this._theGrid, ctx);
+        }
+        else {
+            this._exportSvc.cancelExcelExport(ctx);
+        }
+    }
+    _exportToPdf() {
+        this._exportSvc.exportToPdf(this._theGrid, {
+            countryMap: this._countryMap,
+            colorMap: this._colorMap,
+            historyCellTemplate: this._historyCellTemplate
+        });
+    }
+    _createItemsSource() {
+        const data = this._dataSvc.getData(this._itemsCount);
+        const view = new wjcCore.CollectionView(data, {
+            getError: (item, prop) => {
+                const displayName = this._theGrid.columns.getColumn(prop).header;
+                return this._dataSvc.validate(item, prop, displayName);
+            }
+        });
+        view.collectionChanged.addHandler((s, e) => {
+            // initializes new added item with a history data
+            if (e.action === wjcCore.NotifyCollectionChangedAction.Add) {
+                e.item.history = this._dataSvc.getHistoryData();
+                e.item.id = this._lastId;
+                this._lastId++;
+            }
+        });
+        return view;
+    }
+    _disposeItemsSource(itemsSource) {
+        if (itemsSource) {
+            itemsSource.collectionChanged.removeAllHandlers();
+        }
+    }
+    // build a data map from a string array using the indices as keys
+    _buildDataMap(items) {
+        const map = [];
+        for (let i = 0; i < items.length; i++) {
+            map.push({ key: i, value: items[i] });
+        }
+        return new wjcGrid.DataMap(map, 'key', 'value');
+    }
+    _handleItemsCountChange() {
+        this._disposeItemsSource(this._itemsSource);
+        this._lastId = this._itemsCount;
+        this._itemsSource = this._createItemsSource();
+        this._theGrid.itemsSource = this._itemsSource;
+    }
+-->

@@ -1,0 +1,43 @@
+:host {
+    position: sticky;
+}
+
+:host([position="top"]) {
+    background: linear-gradient(90deg, red, green,blue);
+    grid-column-start: start;
+    grid-column-end: end;
+    grid-row-start: start;
+    grid-row-end: topHeader;
+    top: 0;
+    height: 20px;
+}
+
+:host([position="left"]) {
+    background: linear-gradient(red, green,blue);
+    grid-column-start: start;
+    grid-column-end: leftHeader;
+    grid-row-start: topHeader;
+    grid-row-end: end;
+    left: 0;
+    width: 50px;
+}
+
+:host([position="bottom"]) {
+    background: linear-gradient(90deg, red, green,blue);
+    grid-column-start: start;
+    grid-column-end: end;
+    grid-row-start: bottomHeader;
+    grid-row-end: end;
+    bottom: 0;
+    height: 20px;
+}
+
+:host([position="right"]) {
+    grid-column-start: rightHeader;
+    background: linear-gradient(red, green,blue);
+    grid-column-end: end;
+    grid-row-start: start;
+    grid-row-end: end;
+    right: 0;
+    width: 50px;
+}

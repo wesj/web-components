@@ -22,7 +22,7 @@ export default class Draggable extends HTMLElement {
         this.offset = [event.layerX, event.layerY];
         window.addEventListener("mouseup", this);
         window.addEventListener("mousemove", this);
-        this.startDrag();
+        this.startDrag(event.layerX, event.layerY);
     }
 
     move = (event) => {

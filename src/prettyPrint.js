@@ -47,7 +47,7 @@ let matchers = [
         title: (obj) => "Array ",
         detail: (obj) => "(" + obj.length + ") ",
         toString: (obj, options) => "[" + objToString(obj, options) + "]",
-        toNode: prettyPrintObj
+        toNode: prettyPrintObj.bind(null, "array")
     },
     // This matches anything. Leave it at the bottom
     {
@@ -61,7 +61,7 @@ let matchers = [
             return "Object ";
         },
         toString: (obj, options) => "{" + objToString(obj, options) + "}",
-        toNode: prettyPrintObj
+        toNode: prettyPrintObj.bind(null, "object")
     }
 ]
 
@@ -99,7 +99,6 @@ function toggleCollapsed(obj, options) {
         }
         if (!t) return;
 
-        // TODO: Dynamically generate the children
         if (!t.nextSibling || t.nextSibling.nodeName !== "DD") {
             let dd = create("dd", {}, [
                 prettyPrint(obj, {isChild: true, ...options})
@@ -175,21 +174,17 @@ function isExpandable(obj) {
     return isObject(obj) || Array.isArray(obj);
 }
 
-function prettyPrintObj(obj, options) {
+function prettyPrintObj(cls, obj, options) {
     let keys = Object.getOwnPropertyNames(obj);
 
     return create("dl", {}, keys.reduce((vals, key) => {
         let val = obj[key];
 
         vals.push(create("dt", {
-            class: isExpandable(val) ? "row expandable" : "row",
+            class: isExpandable(val) ? cls + " row expandable" : cls + " row",
             onclick: toggleCollapsed(val, options)
         }, [
-            create("span", {class: "key", text: key + ": "}),
-            create("span", {
-                class: "superSimplified",
-                text:"{…}" // TODO: This should just be simplePrint with length 0
-            }),
+            create("span", {class: cls + " key", text: key + ": "}),
             simplePrint(val, options)
         ]));
 
@@ -204,7 +199,6 @@ export default function prettyPrint(obj, options = {}) {
                 class: isExpandable(obj) ? "expandable" : "",
                 onclick: toggleCollapsed(obj, options)    
             }, [
-                create("span", {class: "superSimplified", text: "{…}" }),
                 simplePrint(obj, {isChild: true, ...options})
             ]),
         ]);
@@ -237,7 +231,7 @@ export class JSObject extends HTMLElement {
         dl,
         dt {
             list-style-type: none;
-            padding: 0;
+            padding: 0.1em 0;
             margin: 0; 
         }
         
@@ -252,7 +246,6 @@ export class JSObject extends HTMLElement {
         }
         
         dt > .simplified { display: inline-block; }
-        dt > .superSimplified { display: none; }
         
         dt::before {
             content: var(--deliminator, "⬥");
@@ -270,15 +263,16 @@ export class JSObject extends HTMLElement {
         dt.expandable::before {
             content: var(--deliminator-expand, "⯈");
         }
+
+        dt.expandable.expanded:after {
+            color: var(--deliminator-color, #BBB);
+            content: "{…}";
+        }
         
         dt.expandable.expanded::before {
             content: var(--deliminator-collapse, "⯆");
         }
         
-        dt.expandable.expanded > .superSimplified {
-            display: inline-block;
-        }
-
         dt.expandable.expanded > .simplified {
             display: none;
         }
@@ -297,7 +291,6 @@ export class JSObject extends HTMLElement {
             display: none;
         }
         
-        .superSimplified,
         .simplified {
             opacity: 0.5;
             max-height: 1.5em;

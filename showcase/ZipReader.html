@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <link rel='stylesheet' type='text/css' href='showcase.css'> 
+        <style></style>
+        <script type="module">
+import DemoSection from './DemoSection.js';
+import ZipReader from '../src/ZipReader.js';
+async function onFile(event) {
+    // console.log(event);
+    for (let i = 0, numFiles = event.target.files.length; i < numFiles; i++) {
+        const file = event.target.files[i];
+        let data = await file.arrayBuffer();
+        let reader = new ZipReader(data);
+        // console.log(reader);
+    }
+}
+window.addEventListener("load", () => {
+    document.getElementById("myfile").addEventListener("change", onFile);
+});
+        </script>
+    </head>
+    <body>
+        <h1>ZipReader</h1>
+        <h2>Description</h2>
+        <p>A zip read</p>
+        <h2>Demos</h2>
+        <label for="myfile">Select a file:</label>
+        <input accepts=".zip" type="file" id="myfile" name="myfile"> 
+        <h2>Events</h2>
+        None (yet).
+        <h2>Slots</h2>
+        None
+        <h2>Parts</h2>
+        None
+    </body>
+</html>

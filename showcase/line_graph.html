@@ -1,0 +1,35 @@
+<html>
+    <head>
+        <link rel='stylesheet' type='text/css' href='showcase.css'> 
+        <script type="module">
+import Graph from '../src/graph/graph.js';
+import LineGraph from '../src/graph/line_graph.js';
+import DemoSection from './DemoSection.js';
+        </script>
+    </head>
+    <body>
+        <h1>Line graph</h1>
+        <h2>Description</h2>
+        <p>A graph that shows data, formatted as either markers or lines or both</p>
+        <p>Inside the node you can include data in JSON format. The graph will treat this as a series of key-value pairs, so if your data starts at zero and moves as integers for x-values, you can just use an array. Otherwise, use an object.</p>
+        <p>Future:<ul>
+            <li>Make 2D arrays or x-y pairs an option.</li>
+            <li>Allow passing an object as a value, with color values or special annotations/labels for each data point</li>
+        </ul></p>
+        <h2>Demos</h2>
+        <code style="white-space: pre-wrap;">
+&lt;x-graph id="graph" style="display: block; width: 800px; height:400px;"&gt;
+    &lt;x-data&gt;[1,2,3,4,5]&lt;/x-data&gt;
+&lt;/x-graph&gt;
+        </code>
+        <x-graph id="graph" style="display: block; width: 800px; height:400px;">
+            <x-data>[1,2,3,4,5]</x-data>
+        </x-graph>
+        <h2>Events</h2>
+        None (yet).
+        <h2>Slots</h2>
+        None
+        <h2>Parts</h2>
+        None
+    </body>
+</html>

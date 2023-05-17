@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <link rel='stylesheet' type='text/css' href='showcase.css'> 
+        <script type="module">
+import Graph from '../src/graph/graph.js';
+import LineGraph from '../src/graph/line_graph.js';
+import Annotation from '../src/graph/annotation.js';
+import DemoSection from './DemoSection.js';
+        </script>
+    </head>
+    <body>
+        <h1>Annotation</h1>
+        <h2>Description</h2>
+        <p>Allows showing an annotation on a graph.</p>
+        <h2>Demos</h2>
+        <x-graph id="graph" style="position: relative; display: block; width: 800px; height:400px;">
+            <x-data>
+                [1,2,3,4,5]
+            </x-data>
+            <x-annotation style="padding: 5px; background-color: purple; color: white; border-radius:3px;" x="1" y="2">This is at (1, 2)</x-annotation>
+        </x-graph>
+        <h2>Events</h2>
+        None (yet).
+        <h2>Slots</h2>
+        None
+        <h2>Parts</h2>
+        None
+    </body>
+</html>

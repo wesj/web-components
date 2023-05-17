@@ -1,0 +1,56 @@
+:host {
+    --resizer-size: 5px;
+    position: fixed;
+    display: block;
+}
+
+.resizer {
+    position: absolute;
+}
+
+.resizer.top {
+    height: var(--resizer-size);
+    top: 0;
+    cursor: ns-resize;
+}
+
+.resizer.bottom:not(.left, .right),
+.resizer.top:not(.left, .right) {
+    left: var(--resizer-size);
+    width: calc(100% - 2 * var(--resizer-size));
+}
+
+.resizer.left:not(.top, .bottom),
+.resizer.right:not(.top, .bottom) {
+    top: var(--resizer-size);
+    height: calc(100% - 2 * var(--resizer-size));
+}
+
+.resizer.left {
+    width: var(--resizer-size);
+    left: 0;
+    cursor: ew-resize;
+}
+
+.resizer.bottom {
+    height: var(--resizer-size);
+    bottom: 0;
+    cursor: ns-resize;
+}
+
+.resizer.right {
+    width: var(--resizer-size);
+    right: 0;
+    cursor: ew-resize;
+}
+
+.resizer.top.left,
+.resizer.bottom.right {
+    cursor: nw-resize;
+}
+
+.resizer.top.right,
+.resizer.bottom.left {
+    cursor: ne-resize;
+}
+

@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <link rel='stylesheet' type='text/css' href='showcase.css'> 
+        <script type="module">
+import Graph from '../src/graph/graph.js';
+import FunctionGraph from '../src/graph/function_graph.js';
+import DemoSection from './DemoSection.js';
+        </script>
+    </head>
+    <body>
+        <h1>Function graph</h1>
+        <h2>Description</h2>
+        <p>A graph that shows a function of variable "x"</p>
+        <h2>Demos</h2>
+        <code style="white-space: pre-wrap;">
+&lt;x-graph style="display: block; width: 800px; height:400px;"&gt;
+    &lt;y-axis min="-1.1" max="1.1"&gt;&lt;/y-axis&gt;
+    &lt;x-axis min="-3.14" max="3.14"&gt;&lt;/x-axis&gt;
+    &lt;x-function style="background-color: rgba(0,0,220, 0.5); border: 10px solid blue;"&gt;Math.sin(x)&lt;/x-function&gt;
+    &lt;x-function style="background-color: rgba(220,0,0, 0.5); border: 10px solid red;"&gt;Math.cos(x)&lt;/x-function&gt;
+&lt;/x-graph&gt;
+        </code>
+        <x-graph style="display: block; width: 800px; height:400px;">
+            <y-axis min="-1.1" max="1.1"></y-axis>
+            <x-axis min="-3.14" max="3.14"></x-axis>
+            <x-function style="visibility: hidden; background-color: rgba(0,0,220, 0.5); border: 10px solid blue;">Math.sin(x)</x-function>
+            <x-function style="visibility: hidden; background-color: rgba(220,0,0, 0.5); border: 10px solid red;">Math.cos(x)</x-function>
+        </x-graph>
+        <h2>Events</h2>
+        None (yet).
+        <h2>Slots</h2>
+        None
+        <h2>Parts</h2>
+        None
+    </body>
+</html>

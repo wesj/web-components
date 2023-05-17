@@ -1,0 +1,17 @@
+:host {
+    display: grid;
+    grid-template-columns: [start] min-content [leftHeader] auto [rightHeader] min-content [end];
+    grid-template-rows: [start] min-content [topHeader] auto [bottomHeader] min-content [end];
+}
+
+.cells {
+    grid-column-start: leftHeader;
+    grid-column-end: rightHeader;
+    grid-row-start: topHeader;
+    grid-row-end: bottomHeader;
+}
+
+.cell {
+    position: absolute;
+}
+

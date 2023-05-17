@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style type="text/css">
+html, body {
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+    height: 100%;
+    width: 100%;
+}
+#content {
+    height: 70%;
+    display: block;
+    position: relative;
+}
+
+#content * {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+}
+#timeline {
+    display: block;
+    height: 30%;
+    background-color: white;
+    border-top: 1px solid gray;
+    padding: 0 10px;
+    width: calc(100% - 20px);
+}
+
+x-track,
+x-canvastrack {
+    height: 20px;
+    background-color: rgba(0,0,0,0.1);
+    display: block;
+    border-bottom: 1px solid black;
+    padding: 10px;
+}
+
+x-track:hover,
+x-canvastrack:hover {
+    background-color: rgba(0,0,0,0.21);
+}
+
+x-track.selected,
+x-canvastrack.selected {
+    background-color: rgba(0,0,0,0.5);
+}
+x-track.selected:hover,
+x-canvastrack.selected:hover {
+    background-color: rgba(0,0,0,0.6);
+}
+
+x-toolbar {
+    background-color: lightgray;
+    border-top: 1px solid darkgray;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 1em;
+}
+x-toolbar input[type="radio"] {
+    -moz-appearance: none;
+    appearance: none;
+}
+x-resizable {
+    padding: 10px;
+    border: 1px solid gray;
+    position: absolute;
+}
+        </style>
+        <script type="module">
+import { Timeline, Track } from '../src/Timeline.js';
+import Draggable from '../src/Draggable.js';
+import Toolbar from '../src/Toolbar.js';
+import ResizableBox from '../src/ResizableBox.js';
+function start() {
+    let timeline = document.querySelector("#timeline");
+    let content = document.querySelector("#content");
+    content.startDrag = (x, y) => { timeline.selected.startDrag(x, y); }
+    content.onDrag = (x, y) => { timeline.selected.onDrag(x, y); }
+    content.endDrag = (x, y) => { timeline.selected.endDrag(x, y); }
+
+    timeline.addEventListener("timechange", () => {
+        timeline.draw(content);
+    })
+    timeline.draw(content);
+}
+window.addEventListener("load", start);
+        </script>
+    </head>
+    <body>
+        <x-toolbar>
+            <input name="tool" type="radio" id="textbox-tool"></input>
+            <label for="textbox-tool">Textbox</label>
+        </x-toolbar>
+        <x-draggable id="content"></x-draggable>
+        <x-toolbar>
+            <button>Play</button>
+            <button>Add track</button>
+        </x-toolbar>
+        <x-timeline id="timeline">
+            <x-canvastrack class="selected"></x-canvastrack>
+        </x-timeline>
+    </body>
+</html>

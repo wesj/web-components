@@ -1,0 +1,74 @@
+<html>
+    <head>
+        <style type="text/css">
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+x-graph {
+    display: block;
+    width: 300px;
+    height: 150px;
+    border: 3px solid black;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+}
+x-axis, y-axis {
+    stroke-width: 2px;
+}
+x-function { display: none; color: "green"; stroke: "green"; }
+x-data { display: none; }
+
+#sin {
+    color: rgb(255,0,0);
+    stroke-width: 3;
+}
+
+#cos {
+    stroke: rgb(255, 0, 255);
+    fill: rgba(255, 0, 255, 0.5);
+    stroke-width: 1;
+}
+
+#array1 {
+    stroke: rgb(100, 150, 100);
+    fill: rgba(0, 100, 50, 0.1);
+    stroke-width: 3;
+    list-style-type: circle;
+    border-radius: 3px;
+}
+        </style>
+        <script type="module">
+import Graph from "./graph.js";
+import LineGraph from "./line_graph.js";
+import FunctionGraph from "./function_graph.js";
+import Axis from "./axis.js";
+
+function start() {
+}
+window.addEventListener("load", start);
+        </script>
+    </head>
+    <body>
+        <div class="script">Script</div>
+        <div class="console">Console</div>
+        <div class="environment">Environment</div>
+        <x-graph id="functionGraph">
+            <y-axis min="-10" max="10"></y-axis> 
+            <x-axis min="-10" max="10"></x-axis> 
+
+            <x-function id="sin">5 * Math.sin(x)</x-function>
+            <x-function id="cos">10 * Math.cos(x)</x-function>
+        </x-graph>
+        <x-graph id="lineGraph1">
+            <x-data id="array1">[0,1,2,3,4,5,6,7,8,9,10]</x-data>
+        </x-graph>
+        <x-graph id="lineGraph2">
+            <x-axis id="smallX">[0,2,4]</x-axis>
+            <x-data style="list-style-type: diamond;" id="array2">[0,1,2,3,4,5,6,7,8,9,10]</x-data>
+        </x-graph>
+        <x-graph id="months" style="height: 300px; width: 800px">
+            <x-data id="monthData" connectorLines="true" class="data">{"January": 1, "February": 5, "March": 1, "April": 5, "May": 1, "June": 5, "July": 1, "August": 5, "September": 1, "October": 5, "November": 1, "December": 5}</x-data>
+        </x-graph>
+    </body>
+</html>

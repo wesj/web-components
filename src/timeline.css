@@ -1,0 +1,29 @@
+:host {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    overflow: scroll;
+    width:100%;
+}
+
+.current-time {
+    width: 3px;
+    height: 100%;
+    display: block;
+    left: 10px;
+    position: absolute;
+    background-color: black;
+    cursor: ew-resize;
+    z-index:10;
+}
+
+.markers {
+    height: 20px;
+    padding: 10px;
+    width: 1600px;
+    position: sticky;
+    top: 0;
+    left: 0;
+    background-color: rgba(255,255,255,0.5);
+    border-bottom: 1px solid black;
+}

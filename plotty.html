@@ -1,0 +1,119 @@
+<html>
+    <head>
+        <style type="text/css">
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+x-graph {
+    display: block;
+    width: 300px;
+    height: 150px;
+    border: 3px solid black;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+}
+x-function { display: none; }
+x-data { display: none; }
+        </style>
+        <script type="module">
+import Graph from "./graph.js";
+import LineGraph from "./line_graph.js";
+import FunctionGraph from "./function_graph.js";
+import Axis from "./axis.js";
+
+function start() {
+}
+window.addEventListener("load", start);
+        </script>
+    </head>
+    <body>
+        <h1>Scatter plots</h1>
+        <x-graph>
+            <x-data name="Blue" style="color: #1f77b4;">[null, 10, 15, 13, 17]</x-data>
+            <x-data name="Orange" style="color: #ff7f0e; border: 1px solid #ff7f0e; list-style-type: none;">[ null, null, 16, 5, 11, 9 ]</x-data>
+            <x-data name="Green" style="color: #2ca02c; border: 1px solid #2ca02c;">[null, 12, 9, 15, 12]</x-data>
+            <x-legend></x-legend>
+        </x-graph>
+
+        <h2>Labels on hover</h2>
+        <x-graph>
+            <x-data style="color: #1f77b4;">[null, 10, 15, 13, 17]</x-data>
+            <x-data style="color: #ff7f0e; border: 1px solid #ff7f0e; list-style-type: none;">[ null, null, 16, 5, 11, 9 ]</x-data>
+            <x-data style="color: #2ca02c; border: 1px solid #2ca02c;">[null, 12, 9, 15, 12]</x-data>
+        </x-graph>
+
+        <h2>Labels</h2>
+        <x-graph>
+            <x-data>{ 1: 1, 2: 6, 3: 3, 4: 6, 5: 1 }</x-data>
+            <x-data>{ 1.5: 4, 2.5: 1, 3.5: 7, 4.5: 1, 5.5: 4 }</x-data>
+        </x-graph>
+
+        <h2>Color dimension</h2>
+        <x-graph>
+            <x-data style="list-style-type: circle; border-radius: 10px;">[5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]</x-data>
+        </x-graph>
+
+        <h2>Grouped dimension</h2>
+        <x-graph>
+            <y-axis min="0" max="20"></y-axis>
+            <x-data style="color: #1f77b4;">{"South Korea": 20, "China": 10, "Canada": 9}</x-data>
+            <x-data style="color: red;">{"South Korea": 13, "China": 15, "Canada": 12}</x-data>
+            <x-data style="color: green;">{"South Korea": 11, "China": 8, "Canada": 12}</x-data>
+        </x-graph>
+
+        <h2>Line shape</h2>
+        <x-graph>
+            <x-data style="line-clamp: linear">[1, 3, 2, 3, 1]</x-data>
+            <x-data style="line-clamp: spline">[6, 8, 7, 8, 6]</x-data>
+            <x-data style="line-clamp: vhv">[11, 13, 12, 13, 11]</x-data>              
+            <x-data style="line-clamp: hvh">[16, 18, 17, 18, 16]</x-data>              
+            <x-data style="line-clamp: vh">[21, 23, 22, 23, 21]</x-data>              
+            <x-data style="line-clamp: hv">[26, 28, 27, 28, 26]</x-data>              
+        </x-graph>
+
+        <h2>Graph and axis titles</h2>
+        <x-graph title="Title of the graph">
+            <x-axis title="x-axis title"></x-axis>
+            <y-axis title="y-axis title"></y-axis>
+            <x-data name="Scatter">[10, 15, 13, 17]</x-data>
+            <x-data name="Lines">[16, 5, 11, 9]</x-data>
+            <x-data name="Scatter and lines">[12, 9, 15, 12]</x-data>
+        </x-graph>
+
+        <h2>Line dash</h2>
+        <x-graph>
+            <x-data>[10, 15, 13, 17]</x-data>
+            <x-data style="border-style: solid">[1, 3, 2, 3, 1]</x-data>
+            <x-data style="border-style: dashed">[6, 8, 7, 8, 6]</x-data>
+            <x-data style="border-style: dotted">[11, 13, 12, 13, 11]</x-data>
+            <x-data style="border-style: doubled">[16, 18, 17, 18, 16]</x-data>
+        </x-graph>
+
+        <h2>Gaps</h2>
+        <x-graph>
+            <x-data>[10, 15, 13, 17]</x-data>
+            <x-data style="border-style: solid">[1, 3, 2, 3, 1]</x-data>
+            <x-data style="border-style: dashed">[6, 8, 7, 8, 6]</x-data>
+            <x-data style="border-style: dotted">[11, 13, 12, 13, 11]</x-data>
+            <x-data style="border-style: doubled">[16, 18, 17, 18, 16]</x-data>
+        </x-graph>
+
+        <h2>Annotations</h2>
+        <x-graph>
+            <x-axis>[2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2013]</x-axis>
+            <x-data>[74, 82, 80, 74, 73, 72, 74, 70, 70, 66, 66, 69]</x-data>
+            <x-data>[45, 42, 50, 46, 36, 36, 34, 35, 32, 31, 31, 28]</x-data>
+            <x-data>[13, 14, 20, 24, 20, 24, 24, 40, 35, 41, 43, 50]</x-data>
+            <x-data>[18, 21, 18, 21, 16, 14, 13, 18, 17, 16, 19, 23]</x-data>
+            <x-annotation x="2001" y="74" style="text-align: right">Television 74%</x-annotation>
+            <x-annotation x="2013" y="74">69%</x-annotation>
+        </x-graph>
+
+        <h2>Bar charg</h2>
+        <x-graph>
+            <x-bars style="background-color: blue">{"giraffes": 20, "orangutans": 14, "monkeys": 23}</x-bars>
+            <x-bars style="background-color: orange">{"giraffes": 12, "orangutans": 18, "monkeys": 29}</x-bars>
+        </x-graph>
+    </body>
+</html>
