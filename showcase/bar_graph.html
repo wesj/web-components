@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <link rel='stylesheet' type='text/css' href='showcase.css'> 
+        <script type="module">
+import Graph from '../src/graph/graph.js';
+import BarGraph from '../src/graph/bar_graph.js';
+        </script>
+    </head>
+    <body>
+        <h1>Annotation</h1>
+        <h2>Description</h2>
+        <p>Lets show a graph with some bars instead.</p>
+        <h2>Demos</h2>
+        <x-graph id="graph" style="position: relative; display: block; width: 800px; height:400px;">
+            <x-bar style="border: 5px solid maroon; background-color: red;">[1,2,3,4,5]</x-bar>
+            <x-bar style="border: 3px solid darkblue; background-color: blue;">[5,4,3,2,1]</x-bar>
+            <x-bar style="border: 1px solid darkgreen; background-color: green;">[6,3,4,2,4]</x-bar>
+        </x-graph>
+        <h2>Events</h2>
+        None (yet).
+        <h2>Slots</h2>
+        None
+        <h2>Parts</h2>
+        None
+    </body>
+</html>
