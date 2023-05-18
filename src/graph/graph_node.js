@@ -1,24 +1,49 @@
 export default class GraphNode extends HTMLElement {
-    get color() {
+    _updateComputedStyles() {
         let style = window.getComputedStyle(this);
-        return style.stroke !== "none" ? style.stroke :
-               style.color !== "none" ? style.color : "black";
+        this._color = style.stroke !== "none" ? style.stroke :
+                     style.color !== "none" ? style.color : "black";
+        this._backgroundColor = style.backgroundColor !== "rgba(0, 0, 0, 0)" ? style.backgroundColor : undefined;
+        this._fill = style.fill !== "rgb(0, 0, 0)" ? style.fill : undefined;
+        this._lineWidth = parseFloat(style["stroke-width"]) || 1;
+        this._padding = parseFloat(style["padding-left"]) || 0;
+        this._borderColor = style["border-top-color"];
+        this._borderRadius = parseFloat(style["border-radius"]) || 0;
+    }
+
+    get color() {
+        if (!this._color) {
+            this._updateComputedStyles();
+        }
+        return this._color;
     }
 
     get backgroundColor() {
-        let style = window.getComputedStyle(this);
-        console.log(style.backgroundColor);
-        return style.backgroundColor !== "rgba(0, 0, 0, 0)" ? style.backgroundColor : undefined;
+        if (!this._backgroundColor) {
+            this._updateComputedStyles();
+        }
+        return this._backgroundColor;
     }
 
     get fill() {
-        let style = window.getComputedStyle(this);
-        return style.fill !== "rgb(0, 0, 0)" ? style.fill : undefined;
+        if (!this._fill) {
+            this._updateComputedStyles();
+        }
+        return this._fill;
     }
 
     get lineWidth() {
-        let style = window.getComputedStyle(this);
-        return parseFloat(style["stroke-width"]) || 1;
+        if (!this._lineWidth) {
+            this._updateComputedStyles();
+        }
+        return this._lineWidth;
+    }
+
+    get padding() {
+        if (!this._padding) {
+            this._updateComputedStyles();
+        }
+        return this._padding;
     }
 
     get fontSize() {
@@ -33,14 +58,17 @@ export default class GraphNode extends HTMLElement {
     }
 
     get borderRadius() {
-        let style = window.getComputedStyle(this);
-        return parseFloat(style["border-radius"]) || 0;
+        if (!this._borderRadius) {
+            this._updateComputedStyles();
+        }
+        return this._borderRadius;
     }
 
     get borderColor() {
-        let style = window.getComputedStyle(this);
-        let t = style["border-top-color"];
-        return t;
+        if (!this._borderColor) {
+            this._updateComputedStyles();
+        }
+        return this._borderColor;
     }
 
     get borderWidth() {

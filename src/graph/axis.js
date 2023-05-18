@@ -161,8 +161,6 @@ export default class Axis extends GraphNode {
                 keys = Object.values(points).filter(x => x !== null);
             }
 
-
-            this._valuesAreNumbers = this._valuesAreNumbers;
             keys.forEach((key) => {
                 if (key === undefined) {
                     return;
@@ -191,13 +189,13 @@ export default class Axis extends GraphNode {
                     this._min = Math.floor(this._min * 0.9);
                 }
             }
+
             if (!this.hasAttribute("max")) {
                 this._max = Math.max.apply(null, this._values) || (this._values.length - 1);
                 if (this.direction === Directions.Y) {
                     this._max = Math.ceil(this._max * 1.1);
                 }
             }
-            console.log("Setup", this.direction, this._values, this._min, this._max);
         }
     }
 
@@ -293,7 +291,6 @@ export default class Axis extends GraphNode {
 
     drawTick(renderer, value, position, sizeA, sizeB, skipTransform) {
         renderer.strokePath(() => {
-            console.log(value, position, sizeA, sizeB, skipTransform);
             if (this.direction === "x") {
                 if (!skipTransform) {
                     renderer.moveTo(value, position + sizeA);
