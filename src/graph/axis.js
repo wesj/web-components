@@ -59,8 +59,10 @@ export default class Axis extends GraphNode {
             // TODO: This needs to be smarter on the right side
             offset = this.fontSize * 2;
         }
+        // console.log("Offset", offset);
 
         let scale = (realSize - 2 * offset) / (this.max - this.min);
+        // console.log("Scale", scale);
 
         // Flip the y-axis
         let ret = value;
@@ -71,6 +73,7 @@ export default class Axis extends GraphNode {
             ret -= offset;
             ret = ret / scale + this.min;
         }
+        // console.log("Ret", ret);
 
         // Convert an int to a string if we have a values list
         if (!this._valuesAreNumbers && this.values.length) {
@@ -91,6 +94,8 @@ export default class Axis extends GraphNode {
             let newVal = values.indexOf(val);
             if (newVal >= 0) {
                 val = newVal;
+            } else {
+                throw "Invalid coordinate " + val;
             }
         }
 
@@ -199,16 +204,16 @@ export default class Axis extends GraphNode {
         }
     }
 
-    render(renderer) {
-        console.log("   Render axis", this.direction, this.min, this.max, this._values);
+    render(renderer, debug) {
+        debug("   Render axis", this.direction, this.min, this.max, this._values);
         renderer.save(() => {
             renderer.strokeColor = this.borderColor;
             renderer.fillColor = this.color;
             renderer.lineWidth = this.borderWidth;
     
             let position = 0;
-            this.drawAxis(renderer, position);    
-            this.drawGrid(renderer, position);
+            this.drawAxis(renderer, position, debug);    
+            this.drawGrid(renderer, position, debug);
         });
     }
 
@@ -257,10 +262,10 @@ export default class Axis extends GraphNode {
         }
     }
 
-    drawGrid(renderer, position) {
+    drawGrid(renderer, position, debug) {
         if (this.ticks) {
             renderer.save(() => {
-                console.log("       Draw grid", this.id);
+                debug("       Draw grid", this.id);
                 renderer.strokeColor = "rgb(220,220,220)";
                 if (this.values && !this._valuesAreNumbers) {
                     for (let val of this.valuesIter()) {

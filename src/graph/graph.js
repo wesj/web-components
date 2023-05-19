@@ -7,7 +7,6 @@ export default class Graph extends HTMLElement {
         super();
         // const shadow = this.attachShadow({ mode: "open" });
         this.renderer = new Renderer(this);
-        console.log("Construct");
         this.appendChild(this.renderer.root);
 
         this.observer = new MutationObserver((event) => {
@@ -15,39 +14,39 @@ export default class Graph extends HTMLElement {
         });
         const config = { attributes: false, childList: true, subtree: false };
         this.observer.observe(this, config);
+
+        this.eventToCanvasCoords = this.eventToCanvasCoords.bind(this);
+    }
+
+    eventToCanvasCoords(event, graph) {
+        let box = this.getBoundingClientRect();
+        let x = event.clientX - box.left;
+        let y = event.clientY - box.top;
+
+        let xaxis = this.getXAxisFor(graph);
+        let yaxis = this.getYAxisFor(graph);
+        return [
+            xaxis.toCanvasCoords(x, box.width),
+            yaxis.toCanvasCoords(y, box.height)
+        ];
     }
 
     connectedCallback() {
         this.setNeedsRender();
     }
 
-    setNeedsRender() {
+    setNeedsRender(debug) {
         if (!this._needsRender) {
             this._needsRender = true;
             window.requestAnimationFrame(() => {
                 this._needsRender = false;
                 this.setup();
-                this.render();
+                this.render(console.log);
             })
         }
     }
 
-    requestMousePosition() {
-        if (!this.mouse) {
-            this.mouse = true;
-            this.addEventListener("mousemove", (event) => {
-                this.mouseMove(event);
-            });
-        }
-    }
-
-    mouseMove(event) {
-        let box = this.getBoundingClientRect();
-        let x = event.clientX - box.left;
-        let y = event.clientY - box.top;
-        x = this.renderer.xAxis.toCanvasCoords(x, this.clientWidth);
-        y = this.renderer.yAxis.toCanvasCoords(y, this.clientHeight);
-
+    getNearestPoint(x, y) {
         let nearest = null;
         for (var i = 0; i < this.childNodes.length; i++) {
             let child = this.childNodes[i];
@@ -61,17 +60,7 @@ export default class Graph extends HTMLElement {
             }
         }
 
-        if (nearest) {
-            this.renderer.currentX = nearest.position.x;
-            this.renderer.currentY = nearest.position.y;
-
-            for (var i = 0; i < this.childNodes.length; i++) {
-                let child = this.childNodes[i];
-                if (child instanceof Annotation) {
-                    child.render(this.renderer);
-                }
-            }
-        }
+        return nearest;
     }
 
     setup() {
@@ -90,11 +79,11 @@ export default class Graph extends HTMLElement {
         }
     }
 
-    render() {
-        console.log("Render", this.id);
-        this.drawYAxis();
-        this.drawXAxis();
-        this.renderChildren();
+    render(debug = () => { }) {
+        debug("Render", this.id);
+        this.drawYAxis(debug);
+        this.drawXAxis(debug);
+        this.renderChildren(debug);
     }
 
     getXAxisFor(child) {
@@ -121,23 +110,23 @@ export default class Graph extends HTMLElement {
         return this.yAxis[0];
     }
 
-    renderChildren() {
+    renderChildren(debug) {
         for (var i = 0; i < this.childNodes.length; i++) {
             let child = this.childNodes[i];
             if (child.render && !(child instanceof Axis)) {
                 this.renderer.xAxis = this.getXAxisFor(child);
                 this.renderer.yAxis = this.getYAxisFor(child);
-                child.render(this.renderer);
+                child.render(this.renderer, debug);
             }
         }
     }
 
-    drawYAxis() {
+    drawYAxis(debug = () => { }) {
         let xAxis = this.xAxis[0];
         this.yAxis.forEach((axis) => {
             this.renderer.xAxis = xAxis;
             this.renderer.yAxis = axis;
-            axis.render(this.renderer);
+            axis.render(this.renderer, debug);
         })
     }
 
@@ -165,12 +154,12 @@ export default class Graph extends HTMLElement {
         return this._xAxis;
     } 
 
-    drawXAxis() {
+    drawXAxis(debug = () => { }) {
         let yAxis = this.yAxis[0];
         this.xAxis.forEach((axis) => {
             this.renderer.xAxis = axis;
             this.renderer.yAxis = yAxis;
-            axis.render(this.renderer);
+            axis.render(this.renderer, debug);
         })
     }
 }

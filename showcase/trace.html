@@ -6,6 +6,23 @@ import Graph from '../src/graph/graph.js';
 import LineGraph from '../src/graph/line_graph.js';
 import Annotation from '../src/graph/annotation.js';
 import DemoSection from './DemoSection.js';
+
+function start() {
+    let graph = document.getElementById("graph");
+    let data = document.getElementById("data");
+    let anno = document.getElementById("annotation");
+
+    graph.addEventListener("mousemove", (event) => {
+        let coords = graph.eventToCanvasCoords(event, data);
+        let nearest = graph.getNearestPoint(coords[0], coords[1]);
+
+        anno.textContent = JSON.stringify(nearest.position);
+        anno.setAttribute("x", nearest.position.x);
+        anno.setAttribute("y", nearest.position.y);
+        graph.setNeedsRender();
+    });
+}
+window.addEventListener("load", start);
         </script>
         <style type="text/css">
 x-graph > x-annotation {
@@ -16,6 +33,12 @@ x-graph > x-annotation {
 x-graph:hover > x-annotation {
     opacity: 1.0;
 }
+
+x-annotation {
+    padding: 5px; 
+    color: white;
+    border-radius:3px;
+}
         </style>
     </head>
     <body>
@@ -24,11 +47,11 @@ x-graph:hover > x-annotation {
         <p>Allows showing an annotation on a graph.</p>
         <h2>Demos</h2>
         <x-graph id="graph" style="position: relative; display: block; width: 800px; height:400px;">
-            <x-data>
+            <x-data id="data">
                 [1,2,3,4,5]
             </x-data>
-            <x-annotation style="padding: 5px; background-color: purple; color: white; border-radius:3px;" x="1" y="2">This is at (1, 2) <input></x-annotation>
-            <x-annotation style="padding: 5px; background-color: darkblue; color: white; border-radius:3px;" x="current" y="current">This is at ({current.x}, {current.y})</x-annotation>
+            <x-annotation style="background-color: purple;" x="1" y="2">This is at (1, 2)</x-annotation>
+            <x-annotation id="annotation" style="background-color: darkblue;"></x-annotation>
         </x-graph>
         <h2>Events</h2>
         None (yet).

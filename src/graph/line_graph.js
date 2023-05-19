@@ -94,9 +94,9 @@ export default class LineGraph extends GraphNode {
         });
     }
 
-    drawFill(renderer, points) {
+    drawFill(renderer, points, debug) {
         if (this.backgroundColor) {
-            console.log("       Draw fill", this.id);
+            debug("       Draw fill", this.id);
             renderer.save(() => {
                 renderer.fillColor = this.fill;
                 renderer.fillPath((r) => {
@@ -119,9 +119,9 @@ export default class LineGraph extends GraphNode {
         }
     }
 
-    drawLines(renderer, points) {
+    drawLines(renderer, points, debug) {
         if (this.borderWidth) {
-            console.log("       Draw lines", this.id);
+            debug("       Draw lines", this.id);
             renderer.save(() => {
                 renderer.strokeColor = this.borderColor;
                 renderer.lineWidth = this.borderWidth;
@@ -145,14 +145,14 @@ export default class LineGraph extends GraphNode {
         }
     }
 
-    render(renderer) {
-        console.log("   Render lines");
+    render(renderer, debug) {
+        debug("   Render lines");
         let points = this.points;
 
-        this.drawFill(renderer, points);
-        this.drawLines(renderer, points);
+        this.drawFill(renderer, points, debug);
+        this.drawLines(renderer, points, debug);
 
-        this.drawPoints(renderer, points);
+        this.drawPoints(renderer, points, debug);
     }
 
     drawPoints(renderer, points) {
