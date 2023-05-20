@@ -17,19 +17,26 @@ import DemoSection from './DemoSection.js';
             <li>Allow passing an object as a value, with color values or special annotations/labels for each data point</li>
         </ul></p>
         <h2>Demos</h2>
-        <code style="white-space: pre-wrap;">
-&lt;x-graph id="graph" style="display: block; width: 800px; height:400px;"&gt;
-    &lt;x-data&gt;[1,2,3,4,5]&lt;/x-data&gt;
-&lt;/x-graph&gt;
-        </code>
         <x-graph id="graph" style="display: block; width: 800px; height:400px;">
-            <x-data>[1,2,3,4,5]</x-data>
+            <x-data style="border: 3px solid blue; border-radius: 8px; color: blue; list-style-type: circle;">[1,2,3,4,5]</x-data>
+            <x-data style="border: 2px solid red; border-radius: 10px; color: red; list-style-type: disc;">[6,5,4,3,2]</x-data>
+            <x-data style="border: 1px solid green; background-color: rgba(0,255,0,0.5); border-radius: 10px; color: green; list-style-type: diamond;">[7,2,4,1,5]</x-data>
+            <x-data style="border: 4px dotted purple; border-radius: 10px; color: purple; list-style-type: square;">[1,1,1,1,1]</x-data>
         </x-graph>
         <h2>Events</h2>
         None (yet).
-        <h2>Slots</h2>
-        None
-        <h2>Parts</h2>
-        None
+        <h2>Attrbiutes</h2>
+        None (yet).
+        <h2>Styles</h2>
+        <dl>
+            <dt>color</dt>
+            <dd>Controls the color of the points being drawn</dd>
+            <dt>background-color</dt>
+            <dd>Controls the fill shown behind the graph</dd>
+            <dt>border</dt>
+            <dd>Controls the style of the line shown connecting the points</dd>
+            <dt>list-style-type</dt>
+            <dd>Controls the shape of the points. Supported values: circle, disc, diamond, square</dd>
+        </dl>
     </body>
 </html>

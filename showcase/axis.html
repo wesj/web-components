@@ -13,23 +13,30 @@ import DemoSection from './DemoSection.js';
         <h2>Description</h2>
         <p>An axis in a graph. Can be used to configure the bounds, grids, and labels.</p>
         <h2>Demos</h2>
-        <code style="white-space: pre-wrap;">
-&lt;x-graph style="display: block; width: 800px; height:400px;"&gt;
-    &lt;y-axis min="-1.1" max="1.1" ticks="major" labels="false"&gt;&lt;/y-axis&gt;
-    &lt;x-axis min="-3.14" max="3.14"&gt;&lt;/x-axis&gt;
-    &lt;x-function style="background-color: rgba(220,0,0, 0.5); border: 10px solid red;"&gt;Math.cos(x)&lt;/x-function&gt;
-&lt;/x-graph&gt;
-        </code>
         <x-graph style="display: block; width: 800px; height:400px;">
-            <y-axis min="-1.1" max="1.1" ticks="major" labels="false"></y-axis>
-            <x-axis min="-3.14" max="3.14"></x-axis>
+            <y-axis style="border: 4px solid green; font: 24px Arial;" min="-1.1" max="1.1" ticks="minor" labels="true"></y-axis>
+            <x-axis style="border: 2px solid blue; font: 14px Arial;" min="-3.14" max="3.14"></x-axis>
             <x-function style="visibility: hidden; background-color: rgba(220,0,0, 0.5); border: 10px solid red;">Math.cos(x)</x-function>
         </x-graph>
-        <h2>Events</h2>
-        None (yet).
-        <h2>Slots</h2>
-        None
-        <h2>Parts</h2>
-        None
+        <h2>Attributes</h2>
+        <dl>
+            <dt>min</dt>
+            <dd>Minimum value of the graph</dd>
+            <dt>max</dt>
+            <dd>Maximum value of the graph</dd>
+            <dt>values</dt>
+            <dd>A set of values to show along the graph</dd>
+            <dt>ticks</dt>
+            <dd>One of major, minor, or grid</dd>
+            <dt>labels</dt>
+            <dd>Whether or not to show labels on major grid lines or ticks</dd>
+        </dl>
+        <h2>Styles</h2>
+        <dl>
+            <dt>font</dt>
+            <dd>Controls font of labels</dd>
+            <dt>border</dt>
+            <dd>Controls the style of the main axis lines (color and width)</dd>
+        </dl>
     </body>
 </html>

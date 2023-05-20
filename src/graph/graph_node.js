@@ -9,6 +9,10 @@ export default class GraphNode extends HTMLElement {
         this._padding = parseFloat(style["padding-left"]) || 0;
         this._borderColor = style["border-top-color"];
         this._borderRadius = parseFloat(style["border-radius"]) || 0;
+        this._fontSize = parseFloat(style.fontSize) || 14;
+        this._font = style.font || "14px sans-serif";
+        this._borderWidth = parseFloat(style["border-width"]) || 0;
+        console.log(this.nodeName, style);
     }
 
     get color() {
@@ -47,8 +51,17 @@ export default class GraphNode extends HTMLElement {
     }
 
     get fontSize() {
-        let style = window.getComputedStyle(this);
-        return parseFloat(style["font-size"]) || 14;
+        if (!this._fontSize) {
+            this._updateComputedStyles();
+        }
+        return this._fontSize;
+    }
+
+    get font() {
+        if (!this._font) {
+            this._updateComputedStyles();
+        }
+        return this._font;
     }
 
     get listStyleType() {
@@ -72,7 +85,9 @@ export default class GraphNode extends HTMLElement {
     }
 
     get borderWidth() {
-        let style = window.getComputedStyle(this);
-        return parseFloat(style["border-width"]) || 0;
+        if (!this._borderWidth) {
+            this._updateComputedStyles();
+        }
+        return this._borderWidth;
     }
 }

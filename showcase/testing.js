@@ -50,3 +50,8 @@ function keypress(event) {
 export let setupTests = function () {
     window.addEventListener("keypress", keypress);
 }
+
+function start() {
+    setupTests();
+}
+window.addEventListener("load", start);

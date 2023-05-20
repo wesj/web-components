@@ -17,6 +17,8 @@ export default class Renderer {
     toScreenCoords(x, y, skipTransform) {
         let x2 = this.xAxis.toScreenCoords(x, this.root.clientWidth, skipTransform);
         let y2 = this.yAxis.toScreenCoords(y, this.root.clientHeight, skipTransform);
+        if (x === null) x2 = 0;
+        if (y === null) y2 = 0;
         return [x2, y2];
     }
 
@@ -25,7 +27,8 @@ export default class Renderer {
         let p2 = this.toScreenCoords(x + w, y + h, skipTransform);
         w = p2[0] - p[0];
         h = p2[1] - p[1];
-        this.ctx.fillRect(p[0] - w/2, p[1] - h/2, w, h);
+        // console.log("fillrect", p, p2);
+        this.ctx.fillRect(p[0], p[1], w, h);
     }
 
     squircle(x, y, width, height, cornerRadius) {
@@ -64,7 +67,7 @@ export default class Renderer {
         let p2 = this.toScreenCoords(x + w, y + h, skipTransform);
         w = p2[0] - p[0];
         h = p2[1] - p[1];
-        this.ctx.strokeRect(p[0] - w/2, p[1] - h/2, w, h);
+        this.ctx.strokeRect(p[0], p[1], w, h);
     }
 
     moveTo(x, y, skipTransform) {
@@ -116,6 +119,10 @@ export default class Renderer {
         this.ctx.save();
         callback();
         this.ctx.restore();
+    }
+
+    set font(val) {
+        this.ctx.font = val;
     }
 
     set lineDash(vals) {

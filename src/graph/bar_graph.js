@@ -54,14 +54,24 @@ export default class BarGraph extends GraphNode {
         renderer.save(() => {
             let w = this.width;
             let offset = this.offset;
-            let spacing = this.spacing;
             renderer.fillColor = this.backgroundColor;
             renderer.strokeColor = this.borderColor;
             renderer.lineWidth = this.borderWidth;
 
             for (const i of renderer.xAxis.valuesIter()) {
-                renderer.fillRect(spacing/ 2 + offset + i + w/2, 0 + points[i]/2, w - this.padding, points[i]);
-                renderer.strokeRect(spacing/ 2 + offset + i + w/2, 0 + points[i]/2, w - this.padding, points[i]);
+                // This is a mess :( To make this graph work with labeled data sets, we can't mix
+                // i (which might be a string) with offsets and numbers. Once we've translated though
+                // Trying to draw using the coords we have doesn't work anymore (because some of the transform)
+                // is inside the renderer, and some of it is here. I think we need to move the offset out of this
+                // axis node to fix it, but for now we basically move to drawing in exact coords here.
+                renderer.translate(i, null, () => {
+                    let x1 = renderer.xAxis.toScreenCoords(offset, renderer.root.clientWidth);
+                    let x2 = renderer.xAxis.toScreenCoords(offset + w, renderer.root.clientWidth);
+                    let y1 = renderer.yAxis.toScreenCoords(0, renderer.root.clientHeight);
+                    let y2 = renderer.yAxis.toScreenCoords(points[i], renderer.root.clientHeight);
+                    renderer.fillRect(x1, y1, x2 - x1, y2 - y1, true);
+                    renderer.strokeRect(x1, y1, x2 - x1, y2 - y1, true);
+                });
             }
         });
     }

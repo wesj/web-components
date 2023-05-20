@@ -77,8 +77,10 @@ export default class LineGraph extends GraphNode {
     }
 
     drawSquares(renderer, x, y) {
-        let r = this.radius;
-        renderer.fillRect(x, y, r, r);
+        let r = this.radius * Math.sqrt(2);
+        renderer.translate(x, y, () => {
+            renderer.fillRect(-r/2, -r/2, r, r, true);
+        })
     }
 
     drawDiamonds(renderer, x, y) {
@@ -98,7 +100,7 @@ export default class LineGraph extends GraphNode {
         if (this.backgroundColor) {
             debug("       Draw fill", this.id);
             renderer.save(() => {
-                renderer.fillColor = this.fill;
+                renderer.fillColor = this.backgroundColor;
                 renderer.fillPath((r) => {
                     let prev = null;
                     for (const i of renderer.xAxis.valuesIter()) {

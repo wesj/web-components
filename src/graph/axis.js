@@ -54,10 +54,11 @@ export default class Axis extends GraphNode {
     }
 
      toCanvasCoords(value, realSize) {
+        // This offset should be done by the graph?
         let offset = 0;
         if (this.min === 0 && this.labels) {
             // TODO: This needs to be smarter on the right side
-            offset = this.fontSize * 2;
+            // offset = this.fontSize * 2;
         }
         // console.log("Offset", offset);
 
@@ -89,22 +90,22 @@ export default class Axis extends GraphNode {
         let values = this.values;
         let val = originalValue;
 
-        // Convert a string to an int if we have a values list
-        if (typeof(val) != "number" && values.length) {
-            let newVal = values.indexOf(val);
-            if (newVal >= 0) {
-                val = newVal;
-            } else {
-                throw "Invalid coordinate " + val;
-            }
-        }
-
         if (skipTransform) {
             return val;
         }
 
         if (this._coord_cache[val]) {
             return this._coord_cache[val];
+        }
+
+        // Convert a string to an int if we have a values list
+        if (typeof(val) !== "number" && values.length) {
+            let newVal = values.indexOf(val);
+            if (newVal >= 0) {
+                val = newVal;
+            } else {
+                // throw "Invalid coordinate " + val;
+            }
         }
 
         let offset = 0;
@@ -152,6 +153,7 @@ export default class Axis extends GraphNode {
         if (points) {
 
             let keys;
+
             if (this.direction === Directions.X) {
                 keys = Object.keys(points);
             } else {
@@ -166,10 +168,12 @@ export default class Axis extends GraphNode {
                 keys = Object.values(points).filter(x => x !== null);
             }
 
+            // Read and all all the keys
             keys.forEach((key) => {
                 if (key === undefined) {
                     return;
                 }
+
                 try {
                     let keyFloat = parseFloat(key);
                     if (!isNaN(keyFloat)) {
@@ -184,19 +188,26 @@ export default class Axis extends GraphNode {
                 }
             });
 
+            // Order is probably screwed up with keys, but for numbers lets try and sort
             if (this._valuesAreNumbers) {
                 this._values = this._values.sort()
             }
 
+            // Setup the minimum
             if (!this.hasAttribute("min")) {
                 this._min = Math.min.apply(null, this._values) || 0;
+
                 if (this.direction === Directions.Y) {
                     this._min = Math.floor(this._min * 0.9);
                 }
             }
 
+            // Setup the maximum
             if (!this.hasAttribute("max")) {
                 this._max = Math.max.apply(null, this._values) || (this._values.length - 1);
+                if (!this._valuesAreNumbers) {
+                    this._max += 1;
+                }
                 if (this.direction === Directions.Y) {
                     this._max = Math.ceil(this._max * 1.1);
                 }
@@ -235,8 +246,10 @@ export default class Axis extends GraphNode {
             this._values = this.getAttribute("values").split(/\s+/).map((val) => {
                 let keyFloat = parseFloat(val);
                 if (!isNaN(keyFloat)) {
+                    console.log("Key,", val, "is a number")
                     return keyFloat;
                 }
+                console.log("Key,", val, "is not a number")
                 this._this._valuesAreNumbers = false;
                 return val;
             });
@@ -266,23 +279,37 @@ export default class Axis extends GraphNode {
         if (this.ticks) {
             renderer.save(() => {
                 debug("       Draw grid", this.id);
-                renderer.strokeColor = "rgb(220,220,220)";
+                let size = 6;
+                let small_size = 4;
                 if (this.values && !this._valuesAreNumbers) {
                     for (let val of this.valuesIter()) {
-                        this.drawTick(renderer, val, position);
+                        if (val === 0) {
+                            continue;
+                        }
+                        if (this.ticks === "major") {
+                            this.drawTick(renderer, val, position, -size, size, true);
+                        } else if (this.ticks === "minor") {
+                            let small_space = space / 5;
+                            this.drawTick(renderer, val, position, -size, size, true);
+                        } else if (this.ticks === "grid") {
+                            renderer.strokeColor = "rgb(200,200,200)";
+                            if (this.direction === Directions.X) {
+                                this.drawTick(renderer, val, position, renderer.yAxis.min, renderer.yAxis.max, false);
+                            } else {
+                                this.drawTick(renderer, val, position, renderer.xAxis.min, renderer.xAxis.max, false);
+                            }
+                        }
                     }                    
                 } else {
                     let space = 1;
-                    let size = 3;
-
                     if (this.ticks === "major") {
                         this.drawTicks(renderer, space, position, -size, size, true);
                     } else if (this.ticks === "minor") {
-                        let small_size = 2;
                         let small_space = space / 5;
                         this.drawTicks(renderer, space, position, -size, size, true);
                         this.drawTicks(renderer, small_space, position, -small_size, small_size, true);
                     } else if (this.ticks === "grid") {
+                        renderer.strokeColor = "rgb(200,200,200)";
                         if (this.direction === Directions.X) {
                             this.drawTicks(renderer, space, position, renderer.yAxis.min, renderer.yAxis.max, false);
                         } else {
@@ -297,34 +324,44 @@ export default class Axis extends GraphNode {
     drawTick(renderer, value, position, sizeA, sizeB, skipTransform) {
         renderer.strokePath(() => {
             if (this.direction === "x") {
-                if (!skipTransform) {
-                    renderer.moveTo(value, position + sizeA);
-                    renderer.lineTo(value, position + sizeB);
-                } else {
+                if (skipTransform) {
                     renderer.translate(value, position, () => {
                         renderer.moveTo(0, sizeA, skipTransform);
                         renderer.lineTo(0, sizeB, skipTransform);
                     })
+                } else {
+                    // console.log("Draw tick2", value, position + sizeA);
+                    renderer.moveTo(value, position + sizeA);
+                    renderer.lineTo(value, position + sizeB);
                 }
             } else {
-                if (!skipTransform) {
-                    renderer.moveTo(position + sizeA, value);
-                    renderer.lineTo(position + sizeB, value);
-                } else {
+                if (skipTransform) {
                     renderer.translate(position, value, () => {
                         renderer.moveTo(sizeA, 0, skipTransform);
                         renderer.lineTo(sizeB, 0, skipTransform);
                     })
+                } else {
+                    renderer.moveTo(position + sizeA, value);
+                    renderer.lineTo(position + sizeB, value);
                 }
             }
         })
 
         if (this.labels) {
             let txt = value;
+            renderer.font = this.font;
             let textSize = renderer.measureText(txt);
+
             if (this.direction === "x") {
                 renderer.translate(value, position, () => {
-                    renderer.drawText(txt, -textSize.width / 2, this.fontSize * 1, true);
+                    if (this._valuesAreNumbers) {
+                        renderer.drawText(txt, -textSize.width / 2, this.fontSize * 1, true);
+                    } else {
+                        // Offset text labels to be between the tick marks
+                        renderer.translate(0.4, null, () => {
+                            renderer.drawText(txt, -textSize.width / 2, this.fontSize * 1, true);
+                        });
+                    }
                 })
             } else {
                 renderer.translate(position, value, () => {
@@ -338,17 +375,19 @@ export default class Axis extends GraphNode {
     drawTicks(renderer, space, position, sizeA, sizeB, skipTransform) {
         let val = 0;
         while (val <= this.max) {
-            if (val >= this.min) {
+            if (val !== 0 && val >= this.min) {
                 val = Math.round(val * 10) / 10;
-                this.drawTick(renderer, val + "", position, sizeA, sizeB, skipTransform);
-                val += space;
+                this.drawTick(renderer, val, position, sizeA, sizeB, skipTransform);
             }
+            val += space;
         }
 
         val = 0;
         while (val >= this.min) {
-            val = Math.round(val * 10) / 10;
-            this.drawTick(renderer, val + "", position, sizeA, sizeB, skipTransform);
+            if (val !== 0) {
+                val = Math.round(val * 10) / 10;
+                this.drawTick(renderer, val, position, sizeA, sizeB, skipTransform);
+            }
             val -= space;
         }
     }
