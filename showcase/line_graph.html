@@ -4,8 +4,52 @@
         <script type="module">
 import Graph from '../src/graph/graph.js';
 import LineGraph from '../src/graph/line_graph.js';
+import Legend from '../src/graph/legend.js';
 import DemoSection from './DemoSection.js';
         </script>
+        <style type="text/css">
+ul {
+    counter-reset: section -1;
+}
+
+li::before {
+    counter-increment: section;
+    content: "Section " counter(section) ": ";
+    font-size: counter(section);
+}
+
+.Jan {
+    content: "";
+    border: 3px solid blue;
+    border-radius: 8px;
+    color: blue;
+    list-style-type: circle;
+}
+.Feb {
+    border: 2px solid red;
+    border-radius: 10px;
+    color: red;
+    list-style-type: disc;
+}
+.March {
+    border: 1px solid green;
+    background-color: rgba(0,255,0,0.5);
+    border-radius: 10px;
+    color: green;
+    list-style-type: diamond;
+}
+.April {
+    border: 4px dotted purple;
+    border-radius: 10px;
+    color: purple;
+    list-style-type: square;
+}
+x-legend {
+    padding: 10px;
+    background-color: white;
+    color: red;
+}
+        </style>
     </head>
     <body>
         <h1>Line graph</h1>
@@ -17,12 +61,14 @@ import DemoSection from './DemoSection.js';
             <li>Allow passing an object as a value, with color values or special annotations/labels for each data point</li>
         </ul></p>
         <h2>Demos</h2>
-        <x-graph id="graph" style="display: block; width: 800px; height:400px;">
-            <x-data style="border: 3px solid blue; border-radius: 8px; color: blue; list-style-type: circle;">[1,2,3,4,5]</x-data>
-            <x-data style="border: 2px solid red; border-radius: 10px; color: red; list-style-type: disc;">[6,5,4,3,2]</x-data>
-            <x-data style="border: 1px solid green; background-color: rgba(0,255,0,0.5); border-radius: 10px; color: green; list-style-type: diamond;">[7,2,4,1,5]</x-data>
-            <x-data style="border: 4px dotted purple; border-radius: 10px; color: purple; list-style-type: square;">[1,1,1,1,1]</x-data>
-        </x-graph>
+        <x-demo>
+            <x-graph id="graph" style="display: block; width: 800px; height:400px;">
+                <x-data title="January" class="Jan">[1,2,3,4,5]</x-data>
+                <x-data title="February" class="Feb">[6,5,4,3,2]</x-data>
+                <x-data title="March" class="March">[7,2,4,1,5]</x-data>
+                <x-data title="April" class="April">[1,1,1,1,1]</x-data>
+            </x-graph>
+        </x-demo>
         <h2>Events</h2>
         None (yet).
         <h2>Attrbiutes</h2>

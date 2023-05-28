@@ -50,13 +50,15 @@ x-annotation {
         <h2>Description</h2>
         <p>Allows showing an annotation on a graph.</p>
         <h2>Demos</h2>
-        <x-graph id="graph" style="position: relative; display: block; width: 800px; height:400px;">
-            <x-data id="data">
-                [1,2,3,4,5]
-            </x-data>
-            <x-annotation style="background-color: purple;" x="1" y="2">This is at (1, 2)</x-annotation>
-            <x-annotation id="annotation" style="background-color: darkblue;"></x-annotation>
-        </x-graph>
+        <x-demo>
+            <x-graph id="graph" style="position: relative; display: block; width: 800px; height:400px;">
+                <x-data id="data">
+                    [1,2,3,4,5]
+                </x-data>
+                <x-annotation style="background-color: purple;" x="1" y="2">This is at (1, 2)</x-annotation>
+                <x-annotation id="annotation" style="background-color: darkblue;"></x-annotation>
+            </x-graph>
+        </x-demo>
         <h2>Events</h2>
         None (yet).
         <h2>Slots</h2>

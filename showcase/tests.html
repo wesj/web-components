@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <script type="application/javascript">
+let tests =[];
+window.registerTests = async (file, cb) => {
+    await cb((name, test) => {
+        tests.push({file, name, test})
+    })
+}
+        </script>
+        <script type="module">
+import {Testing} from "./testing.js";
+import {Console, ConsoleItem} from "../src/console.js";
+customElements.define('x-console', Console);
+customElements.define('x-consoleitem', ConsoleItem);
+
+let modules = [
+    "./testing.js",
+    "../src/graph/graph.js",
+    "../src/graph/axis.js",
+]
+
+async function start() {
+    let c = document.getElementById("console");
+    c.proxy = console;
+    let t = new Testing(c);
+    for (var i = 0; i < modules.length; i++) {
+        c.group(modules[i])
+        let module = await import(modules[i]);
+        let res = await t.run(tests);
+        c.groupEnd();
+    }
+    t.finish();
+}
+
+window.addEventListener("load", start);
+        </script>
+        <style type="text/css">
+span:not(:last-of-type) {
+    padding-right: 0.25em;
+}
+span[type="number"], span[type="boolean"] {
+    color: green;
+}
+        </style>
+    </head>
+    <body>
+        <x-console id="console" style="width: 100%; height: 100%;"></x-console>
+    </body>
+</html>

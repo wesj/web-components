@@ -50,7 +50,7 @@ export default class Tabs extends HTMLElement {
             s.dispatchEvent(blurEvent);
         }
         if (t) { t.forEach(clearSelected) }
-        
+
         setSelected(this.children[val]);
         let tabNodes = this.tabs.querySelectorAll("[index=\"" + val + "\"]");
         for (var i = 0; i < tabNodes.length; i++) {
@@ -75,7 +75,9 @@ export default class Tabs extends HTMLElement {
         this.tabs.style.flexDirection = this.style.flexDirection == "row" ? "column" : "row";
         let content = document.createElement("slot");
         this.shadowRoot.append(linkElem, this.tabs, content);
+    }
 
+    connectedCallback() {
         let tabs = this.querySelectorAll(":scope > x-tab");
         let foundSelected = false;
         let t;
@@ -110,7 +112,7 @@ export default class Tabs extends HTMLElement {
 
         }
 
-        if (!foundSelected) {
+        if (!foundSelected && this.children.length > 0) {
             this.selectedIndex = 0;
         }
     }

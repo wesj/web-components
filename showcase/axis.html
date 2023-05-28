@@ -12,12 +12,17 @@ import DemoSection from './DemoSection.js';
         <h1>Axis</h1>
         <h2>Description</h2>
         <p>An axis in a graph. Can be used to configure the bounds, grids, and labels.</p>
+        <p>A graph can contain multiple of the same axis direction. Data can specify which one they want to use with the "xAxis" or "yAxis" attributes.</p>
         <h2>Demos</h2>
-        <x-graph style="display: block; width: 800px; height:400px;">
-            <y-axis style="border: 4px solid green; font: 24px Arial;" min="-1.1" max="1.1" ticks="minor" labels="true"></y-axis>
-            <x-axis style="border: 2px solid blue; font: 14px Arial;" min="-3.14" max="3.14"></x-axis>
-            <x-function style="visibility: hidden; background-color: rgba(220,0,0, 0.5); border: 10px solid red;">Math.cos(x)</x-function>
-        </x-graph>
+        <x-demo>
+            <x-graph style="display: block; width: 800px; height:400px;">
+                <y-axis style="border: 4px solid green; font: 24px Arial;" min="-1.1" max="1.1" ticks="minor" labels="true"></y-axis>
+                <y-axis id="axis2" style="position: absolute; left: 0;" ticks="major" min="-1" max="4"></y-axis>
+                <x-axis style="border: 2px solid blue; font: 14px Arial;" min="-3.14" max="3.14"></x-axis>
+                <x-function style="visibility: hidden; background-color: rgba(220,0,0, 0.5); border: 10px solid red;">Math.cos(x)</x-function>
+                <x-function yAxis="axis2"" style="visibility: hidden; background-color: rgba(0,220,0, 0.5); border: 10px solid blue;">Math.sin(x)</x-function>
+            </x-graph>
+        </x-demo>
         <h2>Attributes</h2>
         <dl>
             <dt>min</dt>
@@ -37,6 +42,10 @@ import DemoSection from './DemoSection.js';
             <dd>Controls font of labels</dd>
             <dt>border</dt>
             <dd>Controls the style of the main axis lines (color and width)</dd>
+            <dt>position</dt>
+            <dd>Controls the positioning of the axis. Supports "absolute"</dd>
+            <dt>right, left, top, bottom</dt>
+            <dd>Controls the positioning of an absolutely positioned axis. right or left for y-axis. top or bottom for x-axis.</dd>
         </dl>
     </body>
 </html>

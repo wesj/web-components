@@ -4,24 +4,34 @@
         <script type="module">
 import Graph from '../src/graph/graph.js';
 import BarGraph from '../src/graph/bar_graph.js';
-import {registerTest, runTests, setupTests} from './testing.js';
+import Legeend from "../src/graph/legend.js";
+import DemoSection from './DemoSection.js';
         </script>
+        <style>
+.green {
+    border: 3px solid darkblue;
+    background-color: rgba(0,255,0,0.9);
+}
+        </style>
     </head>
     <body>
-        <h1>Annotation</h1>
+        <h1>Bar graph</h1>
         <h2>Description</h2>
-        <p>Lets show a graph with some bars instead.</p>
+        <p>A graph with some bars</p>
         <h2>Demos</h2>
-        <x-graph id="graph" style="position: relative; display: block; width: 800px; height:400px;">
-            <x-bar style="border: 5px solid darkgreen; background-color: rgba(255,0,0,0.9);">{ "January": 1, "February": 2, "March": 3 }</x-bar>
-            <x-bar style="border: 3px solid darkblue; background-color: rgba(0,255,0,0.9);">{ "January": 5, "February": 4, "March": 3 }</x-bar>
-            <x-bar style="border: 1px solid darkred; background-color: rgba(0,0,255,0.9);">{ "January": 6, "February": 2, "March": 1 }</x-bar>
-        </x-graph>
-        <h2>Events</h2>
-        None (yet).
-        <h2>Slots</h2>
-        None
-        <h2>Parts</h2>
-        None
+        <x-demo>
+            <x-graph id="graph" style="position: relative; display: block; width: 800px; height:400px;">
+                <x-bar style="border: 5px solid darkgreen; background-color: rgba(255,0,0,0.9);">{ "January": 1, "February": 2, "March": 3 }</x-bar>
+                <x-bar class="green">{ "January": 5, "February": 4, "March": 3 }</x-bar>
+                <x-bar style="border: 1px solid darkred; background-color: rgba(0,0,255,0.9);">{ "January": 6, "February": 2, "March": 1 }</x-bar>
+            </x-graph>
+        </x-demo>
+        <h2>Styles</h2>
+        <dl>
+            <dt>border</dt>
+            <dd>Controls bordera round the bar</dd>
+            <dt>background-color</dt>
+            <dd>Controls the fill shown behind the graph</dd>
+        </dl>
     </body>
 </html>

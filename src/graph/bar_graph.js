@@ -50,7 +50,7 @@ export default class BarGraph extends GraphNode {
     }
 
     drawBars(renderer, points, debug) {
-        debug("       Draw bars", this.id);
+        console.group("Draw bars " + this.id);
         renderer.save(() => {
             let w = this.width;
             let offset = this.offset;
@@ -74,13 +74,25 @@ export default class BarGraph extends GraphNode {
                 });
             }
         });
+        console.groupEnd();
+    }
+
+    drawIndicator(renderer, width, height) {
+        renderer.save(() => {
+            renderer.fillColor = this.backgroundColor;
+            renderer.strokeColor = this.borderColor;
+            renderer.lineWidth = this.borderWidth;
+            renderer.fillRect(0, 0, width * 2, height * 2, true);
+            renderer.strokeRect(0, 0, width * 2, height * 2, true);
+        });
     }
 
     render(renderer, debug) {
-        debug("   Render bars");
+        console.group("Render bars");
         let points = this.points;
 
         this.drawBars(renderer, points, debug);
+        console.groupEnd();
     }
 }
 

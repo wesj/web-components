@@ -55,11 +55,7 @@ export default class Axis extends GraphNode {
 
      toCanvasCoords(value, realSize) {
         // This offset should be done by the graph?
-        let offset = 0;
-        if (this.min === 0 && this.labels) {
-            // TODO: This needs to be smarter on the right side
-            // offset = this.fontSize * 2;
-        }
+        let offset = this.offset;
         // console.log("Offset", offset);
 
         let scale = (realSize - 2 * offset) / (this.max - this.min);
@@ -85,6 +81,17 @@ export default class Axis extends GraphNode {
         return ret;
     }
 
+    get offset() {
+        let offset = 0;
+        if (this.style.position === "absolute") {
+            offset = this.fontSize * 2;
+        } else if (this.min === 0 && this.labels) {
+            // TODO: This needs to be smarter on the right side
+            offset = this.fontSize * 2;
+        }
+        return offset;
+    }
+
     _coord_cache = {}
     toScreenCoords(originalValue, realSize, skipTransform) {
         let values = this.values;
@@ -108,12 +115,7 @@ export default class Axis extends GraphNode {
             }
         }
 
-        let offset = 0;
-        if (this.min === 0 && this.labels) {
-            // TODO: This needs to be smarter on the right side
-            offset = this.fontSize * 2;
-        }
-
+        let offset = this.offset;
         let scale = (realSize - 2 * offset) / (this.max - this.min);
         let ret = (val - this.min) * scale;
 
@@ -216,19 +218,36 @@ export default class Axis extends GraphNode {
     }
 
     render(renderer, debug) {
-        debug("   Render axis", this.direction, this.min, this.max, this._values);
+        console.group("Render axis", this.direction, this.min, this.max, this._values);
         renderer.save(() => {
             renderer.strokeColor = this.borderColor;
             renderer.fillColor = this.color;
             renderer.lineWidth = this.borderWidth;
     
             let position = 0;
+            if (this.style.position === "absolute") {
+                if (this.direction === Directions.Y) {
+                    if (this.style.right !== "") {
+                        position = renderer.xAxis.max;
+                    } else if (this.style.left !== undefined) {
+                        position = renderer.xAxis.min + (renderer.xAxis.max - renderer.xAxis.min) / 40;
+                    }
+                } else {
+                    if (this.style.top !== "") {
+                        position = renderer.yAxis.max;
+                    } else if (this.style.bottom !== undefined) {
+                        position = renderer.yAxis.min;
+                    }
+                }
+            }
             this.drawAxis(renderer, position, debug);    
             this.drawGrid(renderer, position, debug);
         });
+        console.groupEnd();
     }
 
     drawAxis(renderer, position) {
+        console.log("Draw axis " + this.id, position);
         renderer.strokePath(() => {
             if (this.direction === Directions.X) {
                 renderer.moveTo(this.min, position);
@@ -276,16 +295,13 @@ export default class Axis extends GraphNode {
     }
 
     drawGrid(renderer, position, debug) {
+        console.log("Draw grid " + this.id);
         if (this.ticks) {
             renderer.save(() => {
-                debug("       Draw grid", this.id);
                 let size = 6;
                 let small_size = 4;
                 if (this.values && !this._valuesAreNumbers) {
                     for (let val of this.valuesIter()) {
-                        if (val === 0) {
-                            continue;
-                        }
                         if (this.ticks === "major") {
                             this.drawTick(renderer, val, position, -size, size, true);
                         } else if (this.ticks === "minor") {
@@ -318,7 +334,7 @@ export default class Axis extends GraphNode {
                     }
                 }
             });
-        }        
+        }
     }
 
     drawTick(renderer, value, position, sizeA, sizeB, skipTransform) {
@@ -375,7 +391,7 @@ export default class Axis extends GraphNode {
     drawTicks(renderer, space, position, sizeA, sizeB, skipTransform) {
         let val = 0;
         while (val <= this.max) {
-            if (val !== 0 && val >= this.min) {
+            if (val >= this.min) {
                 val = Math.round(val * 10) / 10;
                 this.drawTick(renderer, val, position, sizeA, sizeB, skipTransform);
             }
@@ -407,3 +423,14 @@ customElements.define("x-axis", Axis);
 
 class YAxis extends Axis { }
 customElements.define("y-axis", YAxis);
+
+if (window.registerTests) {
+    registerTests("axis.js", async (register) => {
+        register("constructor", async (assert) => {
+            let axis = new Axis();
+            axis.setAttribute("min", "12.3");
+            assert.is(axis.min, 12.3, "True");
+        });
+    });
+}
+
