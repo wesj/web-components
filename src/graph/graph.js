@@ -88,15 +88,37 @@ export default class Graph extends HTMLElement {
         }
     }
 
+    getOffset() {
+        let left = 20;
+        let right = 20;
+        let top = 20;
+        let bottom = 20;
+
+        return { left, right, top, bottom };
+    }
+
     render(debug = () => { }) {
         console.group("Render " + this.id);
-        this.drawYAxis(debug);
-        this.drawXAxis(debug);
-        this.renderChildren(debug);
+        let offset = this.getOffset();
+        this.renderer.xAxis = this.xAxis[0];
+        this.renderer.yAxis = this.yAxis[0];
+
+        this.renderer.translate(offset.left, offset.top, () => {
+            this.renderer.height = this.clientHeight - offset.top - offset.bottom;
+            this.renderer.width = this.clientWidth - offset.left - offset.right;
+            // this.drawYAxis(debug);
+            // this.drawXAxis(debug);
+            this.renderChildren(debug);    
+        }, true);
+
         console.groupEnd();
     }
 
     getXAxisFor(child) {
+        if (child.nodeName === "X-AXIS" && child.direction === "x") {
+            return child;
+        }
+
         if (child.hasAttribute("xAxis")) {
             let name = child.getAttribute("xAxis");
             let a = this.querySelector("x-axis[direction='x']#" + name);
@@ -109,6 +131,10 @@ export default class Graph extends HTMLElement {
     }
 
     getYAxisFor(child) {
+        if (child.nodeName === "X-AXIS" && child.direction === "y" || child.nodeName === "Y-AXIS") {
+            return child;
+        }
+
         if (child.hasAttribute("yAxis")) {
             let name = child.getAttribute("yAxis");
             let a = this.querySelector("y-axis#" + name + ", x-axis[direction='y']#" + name);
@@ -123,7 +149,7 @@ export default class Graph extends HTMLElement {
     renderChildren(debug) {
         for (var i = 0; i < this.childNodes.length; i++) {
             let child = this.childNodes[i];
-            if (child.render && !(child instanceof Axis)) {
+            if (child.render) { // && !(child instanceof Axis)) {
                 this.renderer.xAxis = this.getXAxisFor(child);
                 this.renderer.yAxis = this.getYAxisFor(child);
                 child.render(this.renderer, debug);

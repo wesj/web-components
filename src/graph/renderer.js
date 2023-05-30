@@ -4,10 +4,10 @@ export default class Renderer {
 
         let rect = root.getBoundingClientRect();
         let style = window.getComputedStyle(root);
-        this.root.width = rect.width
+        this.width = this.root.width = rect.width
             - parseFloat(style.borderLeftWidth) - parseFloat(style.borderRightWidth)
             - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
-        this.root.height = rect.height
+        this.height = this.root.height = rect.height
             - parseFloat(style.borderTopWidth) - parseFloat(style.borderBottomWidth)
             - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
 
@@ -15,8 +15,8 @@ export default class Renderer {
     }
     
     toScreenCoords(x, y, skipTransform) {
-        let x2 = this.xAxis.toScreenCoords(x, this.root.clientWidth, skipTransform);
-        let y2 = this.yAxis.toScreenCoords(y, this.root.clientHeight, skipTransform);
+        let x2 = this.xAxis.toScreenCoords(x, this.width, skipTransform);
+        let y2 = this.yAxis.toScreenCoords(y, this.height, skipTransform);
         if (x === null) x2 = 0;
         if (y === null) y2 = 0;
         return [x2, y2];

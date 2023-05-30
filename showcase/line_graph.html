@@ -20,34 +20,29 @@ li::before {
 
 .Jan {
     content: "";
-    border: 3px solid blue;
+    border: 3px solid #e63946;
     border-radius: 8px;
-    color: blue;
+    color: #e63946;
     list-style-type: circle;
 }
 .Feb {
-    border: 2px solid red;
+    border: 2px solid #a8dadc;
     border-radius: 10px;
-    color: red;
+    color: #a8dadc;
     list-style-type: disc;
 }
 .March {
-    border: 1px solid green;
-    background-color: rgba(0,255,0,0.5);
+    border: 1px solid #457b9d;
+    background-color: #457b9dAA;
     border-radius: 10px;
-    color: green;
+    color: #457b9d;
     list-style-type: diamond;
 }
 .April {
-    border: 4px dotted purple;
+    border: 4px dotted #1d3557;
     border-radius: 10px;
-    color: purple;
+    color: #1d3557;
     list-style-type: square;
-}
-x-legend {
-    padding: 10px;
-    background-color: white;
-    color: red;
 }
         </style>
     </head>
@@ -63,6 +58,8 @@ x-legend {
         <h2>Demos</h2>
         <x-demo>
             <x-graph id="graph" style="display: block; width: 800px; height:400px;">
+                <x-axis></x-axis>
+                <y-axis></y-axis>
                 <x-data title="January" class="Jan">[1,2,3,4,5]</x-data>
                 <x-data title="February" class="Feb">[6,5,4,3,2]</x-data>
                 <x-data title="March" class="March">[7,2,4,1,5]</x-data>

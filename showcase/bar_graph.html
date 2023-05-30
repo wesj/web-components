@@ -9,8 +9,11 @@ import DemoSection from './DemoSection.js';
         </script>
         <style>
 .green {
-    border: 3px solid darkblue;
-    background-color: rgba(0,255,0,0.9);
+    border: 3px solid #fb5607;
+    background-color: #fb5607AA;
+}
+.graph {
+    position: relative; display: block; width: 800px; height:400px;
 }
         </style>
     </head>
@@ -19,11 +22,24 @@ import DemoSection from './DemoSection.js';
         <h2>Description</h2>
         <p>A graph with some bars</p>
         <h2>Demos</h2>
+        <h3>A graph with vertical bars</h3>
         <x-demo>
-            <x-graph id="graph" style="position: relative; display: block; width: 800px; height:400px;">
-                <x-bar style="border: 5px solid darkgreen; background-color: rgba(255,0,0,0.9);">{ "January": 1, "February": 2, "March": 3 }</x-bar>
+            <x-graph class="graph">
+                <x-axis></x-axis>
+                <y-axis></y-axis>
+                <x-bar style="border: 5px solid #ffbe0b; background-color: #ffbe0bAA;">{ "January": 1, "February": 2, "March": 3 }</x-bar>
                 <x-bar class="green">{ "January": 5, "February": 4, "March": 3 }</x-bar>
-                <x-bar style="border: 1px solid darkred; background-color: rgba(0,0,255,0.9);">{ "January": 6, "February": 2, "March": 1 }</x-bar>
+                <x-bar style="border: 1px solid #3a86ff; background-color: #3a86ffAA;">{ "January": 6, "February": 2, "March": 1 }</x-bar>
+            </x-graph>
+        </x-demo>
+        <h3>A graph with horizontal bars</h3>
+        <x-demo>
+            <x-graph class="graph">
+                <x-axis></x-axis>
+                <y-axis></y-axis>
+                <x-bar style="border: 5px solid #8338ec; background-color: #8338ecAA;">{ "January": 1, "February": 2, "March": 3 }</x-bar>
+                <x-bar class="green">{ "January": 5, "February": 4, "March": 3 }</x-bar>
+                <x-bar style="border: 1px solid #ff006e; background-color: #ff006eAA;">{ "January": 6, "February": 2, "March": 1 }</x-bar>
             </x-graph>
         </x-demo>
         <h2>Styles</h2>

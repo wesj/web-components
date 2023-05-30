@@ -5,11 +5,6 @@ const Directions = {
     Y: "y"
 }
 
-const Positions = {
-    START: "start",
-    END: "end"
-}
-
 export default class Axis extends GraphNode {
     get min() {
         if (!("_min" in this)) {
@@ -54,23 +49,16 @@ export default class Axis extends GraphNode {
     }
 
      toCanvasCoords(value, realSize) {
-        // This offset should be done by the graph?
-        let offset = this.offset;
-        // console.log("Offset", offset);
-
-        let scale = (realSize - 2 * offset) / (this.max - this.min);
-        // console.log("Scale", scale);
+        let scale = realSize / (this.max - this.min);
 
         // Flip the y-axis
         let ret = value;
         if (this.direction == Directions.Y) {
-            ret += offset - realSize;
+            ret += -realSize;
             ret = ret / scale / -1 + this.min;
         } else {
-            ret -= offset;
             ret = ret / scale + this.min;
         }
-        // console.log("Ret", ret);
 
         // Convert an int to a string if we have a values list
         if (!this._valuesAreNumbers && this.values.length) {
@@ -115,15 +103,12 @@ export default class Axis extends GraphNode {
             }
         }
 
-        let offset = this.offset;
-        let scale = (realSize - 2 * offset) / (this.max - this.min);
+        let scale = realSize / (this.max - this.min);
         let ret = (val - this.min) * scale;
 
         // Flip the y-axis
         if (this.direction == Directions.Y) {
-            ret = (val - this.min) * scale * -1 + realSize - offset;
-        } else {
-            ret += offset;
+            ret = (val - this.min) * scale * -1 + realSize;
         }
 
         this._coord_cache[val] = ret;
@@ -374,7 +359,7 @@ export default class Axis extends GraphNode {
                         renderer.drawText(txt, -textSize.width / 2, this.fontSize * 1, true);
                     } else {
                         // Offset text labels to be between the tick marks
-                        renderer.translate(0.4, null, () => {
+                        renderer.translate(0.5, null, () => {
                             renderer.drawText(txt, -textSize.width / 2, this.fontSize * 1, true);
                         });
                     }
