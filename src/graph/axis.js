@@ -69,17 +69,6 @@ export default class Axis extends GraphNode {
         return ret;
     }
 
-    get offset() {
-        let offset = 0;
-        if (this.style.position === "absolute") {
-            offset = this.fontSize * 2;
-        } else if (this.min === 0 && this.labels) {
-            // TODO: This needs to be smarter on the right side
-            offset = this.fontSize * 2;
-        }
-        return offset;
-    }
-
     _coord_cache = {}
     toScreenCoords(originalValue, realSize, skipTransform) {
         let values = this.values;
@@ -142,17 +131,9 @@ export default class Axis extends GraphNode {
             let keys;
 
             if (this.direction === Directions.X) {
-                keys = Object.keys(points);
+                keys = points.map((pt) => pt.x);
             } else {
-                // If the cross axis is only showing a subset of values, we need to filter by it
-                if (crossAxis) {
-                    let newPoints = {};
-                    crossAxis.forEach((key) => {
-                        newPoints[key] = points[key];
-                    })
-                    points = newPoints;
-                }
-                keys = Object.values(points).filter(x => x !== null);
+                keys = points.map((pt) => pt.y);
             }
 
             // Read and all all the keys
@@ -215,7 +196,7 @@ export default class Axis extends GraphNode {
                     if (this.style.right !== "") {
                         position = renderer.xAxis.max;
                     } else if (this.style.left !== undefined) {
-                        position = renderer.xAxis.min + (renderer.xAxis.max - renderer.xAxis.min) / 40;
+                        position = renderer.xAxis.min;
                     }
                 } else {
                     if (this.style.top !== "") {

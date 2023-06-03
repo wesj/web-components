@@ -5,14 +5,15 @@ export default class Annotation extends GraphNode {
         super();
         this.style.position = "absolute";
     }
+
     get x() {
         let x = this.getAttribute("x");
-        return parseFloat(x);
+        return parseFloat(x) || x;
     }
 
     get y() {
-        let x = this.getAttribute("y");
-        return parseFloat(x);
+        let y = this.getAttribute("y");
+        return parseFloat(y) || y;
     }
 
     render(renderer) {
@@ -20,10 +21,9 @@ export default class Annotation extends GraphNode {
     }
 
     updatePosition(renderer, x, y) {
-        x = renderer.xAxis.toScreenCoords(x);
-        y = renderer.yAxis.toScreenCoords(y);
-        this.style.top = y;
-        this.style.left = x;
+        let p = renderer.toScreenCoords(x, y);
+        this.style.top = p[1];
+        this.style.left = p[0];
     }
 }
 customElements.define("x-annotation", Annotation);

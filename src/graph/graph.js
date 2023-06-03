@@ -104,8 +104,9 @@ export default class Graph extends HTMLElement {
         this.renderer.yAxis = this.yAxis[0];
 
         this.renderer.translate(offset.left, offset.top, () => {
-            this.renderer.height = this.clientHeight - offset.top - offset.bottom;
-            this.renderer.width = this.clientWidth - offset.left - offset.right;
+            let style = window.getComputedStyle(this);
+            this.renderer.height = this.clientHeight - offset.top - offset.bottom - parseInt(style.paddingTop) - parseInt(style.paddingBottom);
+            this.renderer.width = this.clientWidth - offset.left - offset.right - parseInt(style.paddingLeft) - parseInt(style.paddingRight);
             // this.drawYAxis(debug);
             // this.drawXAxis(debug);
             this.renderChildren(debug);    

@@ -63,12 +63,10 @@ export default class BarGraph extends GraphNode {
                 renderer.translate(i, null, () => {
                     // Because of weird coordinate system issues, we basically have to do
                     // all the coordinate system transforms here for this to work.
-                    let x1 = renderer.xAxis.toScreenCoords(offset, renderer.width);
-                    let x2 = renderer.xAxis.toScreenCoords(offset + w, renderer.width);
-                    let y1 = renderer.yAxis.toScreenCoords(0, renderer.height);
-                    let y2 = renderer.yAxis.toScreenCoords(points[i], renderer.height);
-                    renderer.fillRect(x1, y1, x2 - x1, y2 - y1, true);
-                    renderer.strokeRect(x1, y1, x2 - x1, y2 - y1, true);
+                    let p1 = renderer.toScreenCoords(offset, 0, offset+w);
+                    let p2 = renderer.xAxis.toScreenCoords(offset + w, points[i]);
+                    renderer.fillRect(p1[0], p1[1], p2[0] - p1[0], p2[1] - p1[1], true);
+                    renderer.strokeRect(p1[0], p1[1], p2[0] - p1[0], p2[1] - p1[1], true);
                 });
             }
         });

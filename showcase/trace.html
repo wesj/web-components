@@ -16,9 +16,9 @@ function start() {
         let coords = graph.eventToCanvasCoords(event, data);
         let nearest = graph.getNearestPoint(coords[0], coords[1]);
 
-        anno.textContent = JSON.stringify(nearest.position);
-        anno.setAttribute("x", nearest.position.x);
-        anno.setAttribute("y", nearest.position.y);
+        anno.textContent = "x: " + nearest.point.x + ",y: " + nearest.point.y;
+        anno.setAttribute("x", nearest.point.x);
+        anno.setAttribute("y", nearest.point.y);
         graph.setNeedsRender();
     });
 }
@@ -54,9 +54,7 @@ x-annotation {
             <x-graph id="graph" style="position: relative; display: block; width: 800px; height:400px;">
                 <x-axis></x-axis>
                 <y-axis></y-axis>
-                <x-data id="data">
-                    [1,2,3,4,5]
-                </x-data>
+                <x-data id="data">[1,2,3,4,5]</x-data>
                 <x-annotation style="background-color: #cad2c5;" x="1" y="2">This is at (1, 2)</x-annotation>
                 <x-annotation id="annotation" style="background-color: #84a98c;"></x-annotation>
             </x-graph>

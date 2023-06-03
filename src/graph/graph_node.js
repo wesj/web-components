@@ -1,3 +1,31 @@
+function listStyleType(node) {
+    if (!node) {
+        return undefined;
+    }
+
+    let style = window.getComputedStyle(node);
+    let t = style["list-style-type"];
+    if (t) {
+        return t;
+    } else {
+        return listStyleType(node.parentNode);
+    }
+}
+
+function borderRadius(node) {
+    if (!node) {
+        return undefined;
+    }
+    let style = window.getComputedStyle(node);
+    let t = style["border-radius"];
+    if (t) {
+        return parseFloat(t);
+    } else {
+        return borderRadius(node.parentNode);
+    }
+}
+
+
 export default class GraphNode extends HTMLElement {
     _updateComputedStyles() {
         let style = window.getComputedStyle(this);
@@ -19,9 +47,9 @@ export default class GraphNode extends HTMLElement {
             this.style["stroke-width"] ? parseFloat(this.style["stroke-width"]) :
             style["stroke-width"] ? parseFloat(style["stroke-width"]) :
             1;
+        this._borderRadius = borderRadius(this);
         this._padding = parseFloat(style["padding"]) || 0;
         this._borderColor = style["border-color"];
-        this._borderRadius = parseFloat(style["border-radius"]) || 0;
         this._fontSize = parseFloat(style.fontSize) || 14;
         this._font = style.font || "14px sans-serif";
     }
@@ -69,9 +97,10 @@ export default class GraphNode extends HTMLElement {
     }
 
     get listStyleType() {
-        let style = window.getComputedStyle(this);
-        let t = style["list-style-type"];
-        return t;
+        if (this._listStyleType === undefined) {
+            this._listStyleType = listStyleType(this);
+        }
+        return this._listStyleType;
     }
 
     get borderRadius() {
