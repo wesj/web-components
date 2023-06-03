@@ -107,7 +107,7 @@ export default class Graph extends HTMLElement {
             let style = window.getComputedStyle(this);
             this.renderer.height = this.clientHeight - offset.top - offset.bottom - parseInt(style.paddingTop) - parseInt(style.paddingBottom);
             this.renderer.width = this.clientWidth - offset.left - offset.right - parseInt(style.paddingLeft) - parseInt(style.paddingRight);
-            this.renderChildren(debug);    
+            this.renderChildren(debug);
         }, true);
 
         debug && debug.groupEnd();
@@ -148,7 +148,7 @@ export default class Graph extends HTMLElement {
     renderChildren(debug) {
         for (var i = 0; i < this.childNodes.length; i++) {
             let child = this.childNodes[i];
-            if (child.render) { // && !(child instanceof Axis)) {
+            if (child.render) {
                 this.renderer.xAxis = this.getXAxisFor(child);
                 this.renderer.yAxis = this.getYAxisFor(child);
                 child.render(this.renderer, debug);

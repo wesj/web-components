@@ -38,9 +38,25 @@ export class GridTicks extends GraphNode {
         }
 
         renderer.save(() => {
-            values.forEach((value) => {
-                this.drawTick(renderer, value, position, size);
-            })
+            if (typeof(values[0]) === "number") {
+                let range = this.parentNode.max - this.parentNode.min;
+                let spacing = range / 10;
+                if (spacing < 1) spacing = 1;
+                for (var i = 0; i < this.parentNode.max; i+= spacing) {
+                    if (i > this.parentNode.min) {
+                        this.drawTick(renderer, i, position, size);
+                    }
+                }
+                for (var i = -spacing; i > this.parentNode.min; i-= spacing) {
+                    if (i < this.parentNode.max) {
+                        this.drawTick(renderer, i, position, size);
+                    }
+                }
+            } else {
+                values.forEach((value) => {
+                    this.drawTick(renderer, value, position, size);
+                })
+            }
         });
         debug && debug.groupEnd();
     }
@@ -59,32 +75,74 @@ class GridLabels extends GraphNode {
             return;
         }
 
+        if (typeof(values[0]) === "number") {
+            this.renderNumbers(renderer, position, debug);
+        } else {
+            this.renderValues(renderer, values, position, debug)
+        }
+        debug && debug.groupEnd();        
+    }
+
+    renderNumbers(renderer, position, debug) {
+        let range = this.parentNode.max - this.parentNode.min;
+        let spacing = range / 10;
+        if (spacing < 1) spacing = 1;
+        for (var i = 0; i < this.parentNode.max; i+= spacing) {
+            i = Math.round(i * 10) / 10;
+            if (i > this.parentNode.min) {
+                if (this.parentNode.direction === "x") {
+                    this.drawValue(renderer, i, i, position, this.fontSize.value);
+                } else {
+                    this.drawValue(renderer, i, position, i, -this.fontSize.value);
+                }
+            }
+        }
+        for (var i = -spacing; i > this.parentNode.min; i-= spacing) {
+            if (i < this.parentNode.max) {
+                if (this.parentNode.direction === "x") {
+                    this.drawValue(renderer, i, i, position, this.fontSize.value)
+                } else {
+                    this.drawValue(renderer, i, position, i, -this.fontSize.value)
+                }
+            }
+        }
+    }
+
+    drawValue(renderer, value, x, y, offset) {
+        let txt = value;
+        let textSize = renderer.measureText(txt);
+        renderer.translate(x, y, () => {
+            if (typeof(txt) === "number") {
+                if (this.parentNode.direction === "x") {
+                    renderer.drawText(txt, -textSize.width / 2, offset, true);
+                } else {
+                    renderer.drawText(txt, -textSize.width - 5, 3, true);
+                }
+            } else {
+                // Offset text labels to be between the tick marks
+                if (this.parentNode.direction === "x") {
+                    renderer.translate(0.5, null, () => {
+                        renderer.drawText(txt, -textSize.width / 2, offset, true);
+                    });
+                } else {
+                    renderer.translate(null, 0.5, () => {
+                        renderer.drawText(txt, -offset, 0, true);
+                    });
+                }
+            }
+        })
+    }
+
+    renderValues(renderer, values, position, debug) {
         if (this.parentNode.direction === "x") {
             values.forEach((value) => {
-                let txt = value;
-                let textSize = renderer.measureText(txt);
-                renderer.translate(value, position, () => {
-                    if (txt instanceof Number || txt === 0) {
-                        renderer.drawText(txt, -textSize.width / 2, this.fontSize * 1, true);
-                    } else {
-                        // Offset text labels to be between the tick marks
-                        renderer.translate(0.5, null, () => {
-                            renderer.drawText(txt, -textSize.width / 2, this.fontSize * 1, true);
-                        });
-                    }
-                })
+                this.drawValue(renderer, value, value, position, this.fontSize.value);
             });
         } else {
             values.forEach((value) => {
-                let txt = value;
-                let textSize = renderer.measureText(txt);
-                renderer.translate(position, value, () => {
-                    renderer.drawText(txt, -textSize.width - this.fontSize / 2, this.fontSize / 4, true);
-                })
+                this.drawValue(renderer, value, position, value, this.fontSize.value / 4);
             });
         }
-
-        debug && debug.groupEnd();        
     }
 }
 customElements.define("x-grid-labels", GridLabels);

@@ -8,7 +8,6 @@ function cacheFloatAttribute(node, attr) {
 
     if (node.hasAttribute(attr)) {
         let val = node.getAttribute(attr);
-        if (attr === "x") console.log("Got", val, attr);
         try {
             let parsed = parseFloat(val);
             if (!isNaN(parsed)) {
@@ -36,12 +35,10 @@ export class BarNode extends GraphNode {
             // all the coordinate system transforms here for this to work.
             let p1 = renderer.toScreenCoords(0, 0);
             let p2 = renderer.toScreenCoords(this.width.value, this.y);
-            console.log(p1, p2);
             let x = p1[0];
             let y = p1[1];
             let w = p2[0] - p1[0];
             let h = p2[1] - p1[1];
-            console.log("Rect", x, y, w, h);
             renderer.fillRect(x, y, w, h, true);
             renderer.strokeRect(x, y, w, h, true);    
         });
@@ -145,7 +142,14 @@ export default class BarGraph extends GraphNode {
         let index = 0; 
 
         let nodes = this.parentNode.parentNode.querySelectorAll("x-bars");
-        let width = 1 / nodes.length;
+        let totalWidth = 1;
+        nodes.forEach((node) => {
+            if (node instanceof GraphNode) {
+                if (node.paddingLeft) totalWidth -= node.paddingLeft.value;
+                if (node.paddingRight) totalWidth -= node.paddingRight.value;
+            }
+        });
+        let width = totalWidth / nodes.length;
 
         for (var i = 0; i < this.childNodes.length; i++) {
             let child = this.childNodes[i];
@@ -158,7 +162,7 @@ export default class BarGraph extends GraphNode {
                             width: ${width}%;
                             background-color: ${this.backgroundColor};
                             border-color: ${this.borderColor};
-                            border-width: ${this.borderWidth};`);
+                            border-width: ${this.borderWidth.value}${this.borderWidth.unit};`);
                         this.shadow.appendChild(point);
                     });
                     index += this._points.length;
@@ -177,11 +181,23 @@ export default class BarGraph extends GraphNode {
         return this._points;
     }
 
+    get width() {
+        if (this.children.length && this.children[0].width) {
+            return this.children[0].width.value;
+        } else if (this.shadow.childNodes.length && this.shadow.childNodes[0].width) {
+            return this.shadow.childNodes[0].width.value;
+        }
+        return 0;
+    }
+
     get offset() {
         let nodes = this.parentNode.querySelectorAll("x-bars");
-        let offset = 1 / nodes.length;
+        let offset = 0;
         for (var i = 0; i < nodes.length; i++) {
-            if (nodes[i] === this) return offset * i;
+            if (nodes[i].paddingLeft) offset += nodes[i].paddingLeft.value;
+            if (nodes[i] === this) return offset;
+            if (nodes[i].width) offset += nodes[i].width;
+            if (nodes[i].paddingRight) offset += nodes[i].paddingRight.value;
         }
         return 0;
     }
@@ -197,11 +213,9 @@ export default class BarGraph extends GraphNode {
     }
 
     render(renderer, debug) {
-        debug.groupCollapsed("Render bars");
+        debug.groupCollapsed("Render bars", this.id, this.offset);
         renderer.translate(this.offset, null, () => {
-            this.points.forEach((point, index) => {
-                point.render(renderer, debug);
-            })
+            this.drawChildren(renderer, debug);
         });
         debug.groupEnd();
     }

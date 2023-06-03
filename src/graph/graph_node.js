@@ -28,7 +28,7 @@ export function getCachedStyleAttrWithUnit(node, attr, defaultValue, shouldItera
         } else if (shouldIterate && node.parentNode) {
             node[key] = getCachedStyleAttrWithUnit(node.parentNode, attr, defaultValue, shouldIterate);
         } else {
-            node[key] = defaultValue;
+            node[key] = { value: defaultValue, unit: "px" };
         }
     }
 
@@ -73,62 +73,43 @@ export function getCachedFloatAttr(node, attr, defaultValue) {
 export default class GraphNode extends HTMLElement {
     _updateComputedStyles() {
         let style = window.getComputedStyle(this);
-        // this._stroke = getCachedStyleAttr(this, "stroke", "black", true, style);
-        this._color = getCachedStyleAttr(this, "color", "black", true, style);
-        this._backgroundColor = getCachedStyleAttr(this, "background-color", "transparent", true, style);
-        // this._fill = getCachedStyleAttr(this, "fill", "transparent", false, style);
-        this._borderWidth = getCachedStyleAttrWithUnit(this, "border-width", 1, false, style);
-        // this._strokeWidth = getCachedStyleAttrWithUnit(this, "stroke-width", 1, false, style);
         this._borderRadius = getCachedStyleAttrWithUnit(this, "border-radius", 0, true, style);
-        getCachedStyleAttrWithUnit(this, "padding", 0, false, style);
         this._borderColor = getCachedStyleAttr(this, "border-color", "transparent", true, style);
         this._fontSize = getCachedStyleAttrWithUnit(this, "font-size", 14, false, style);
         getCachedStyleAttr(this, "font", "14px sans-serif", false, style);
         this._listStyleType = getCachedStyleAttr(this, "list-style-type", "none", true, style);
-        getCachedStyleAttrWithUnit(this, "width", 0, false, style);
-        getCachedStyleAttrWithUnit(this, "height", 0, false, style);
     }
 
     get width() {
-        if (!this._width_) {
-            this._updateComputedStyles();
-        }
-        return this._width_;
+        return getCachedStyleAttrWithUnit(this, "width", 0, false);
     }
 
     get height() {
-        if (!this._height_) {
-            this._updateComputedStyles();
-        }
-        return this._height_;
+        return getCachedStyleAttrWithUnit(this, "height", 0, false);
     }
 
     get color() {
-        if (!this._color) {
-            this._updateComputedStyles();
-        }
-        return this._color;
+        return getCachedStyleAttr(this, "color", "black", false);
     }
 
     get backgroundColor() {
-        if (this._backgroundColor === undefined) {
-            this._updateComputedStyles();
-        }
-        return this._backgroundColor;
+        return getCachedStyleAttr(this, "background-color", "transparent", true);
     }
 
     get borderWidth() {
-        if (this._borderWidth === undefined) {
-            this._updateComputedStyles();
-        }
-        return this._borderWidth;
+        return getCachedStyleAttrWithUnit(this, "border-width", 0, true);
     }
 
     get padding() {
-        if (this._padding === undefined) {
-            this._updateComputedStyles();
-        }
-        return this._padding;
+        return getCachedStyleAttrWithUnit(this, "padding", 0, false);
+    }
+ 
+    get paddingLeft() {
+        return getCachedStyleAttrWithUnit(this, "paddingLeft", 0, false);
+    }
+
+    get paddingRight() {
+        return getCachedStyleAttrWithUnit(this, "paddingRight", 0, false);
     }
 
     get fontSize() {
@@ -160,17 +141,7 @@ export default class GraphNode extends HTMLElement {
     }
 
     get borderColor() {
-        if (this._borderColor === undefined) {
-            this._updateComputedStyles();
-        }
-        return this._borderColor;
-    }
-
-    get borderWidth() {
-        if (this._borderWidth === undefined) {
-            this._updateComputedStyles();
-        }
-        return this._borderWidth;
+        return getCachedStyleAttr(this, "border-color", "transparent", true);
     }
 
     drawChildren(renderer, debug) {
@@ -180,6 +151,7 @@ export default class GraphNode extends HTMLElement {
                 child.render(renderer, debug);
             }
         }
+
         for (var i = 0; i < this.childNodes.length; i++) {
             let child = this.childNodes[i];
             if (child.render) {
