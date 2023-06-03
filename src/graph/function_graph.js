@@ -2,7 +2,7 @@ import GraphNode from "./graph_node.js";
 
 export default class FunctionGraph extends GraphNode {
     render(renderer) {
-        console.log("   Render function", this.id, "=", this.textContent);
+        console.groupCollapsed("Function", "#" + this.id, "=", this.textContent);
         let fun = (x) => {
             let y = 0;
             let text = "y = " + this.textContent + ";";
@@ -35,7 +35,7 @@ export default class FunctionGraph extends GraphNode {
         if (this.color) {
             renderer.save(() => {
                 renderer.strokeColor = this.borderColor;
-                renderer.lineWidth = this.borderWidth;
+                renderer.lineWidth = this.borderWidth.value;
                 renderer.strokePath(() => {
                     vals.forEach((v, i) => {
                         if (i === 0) {

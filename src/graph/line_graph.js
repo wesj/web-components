@@ -2,18 +2,18 @@ import GraphNode from "./graph_node.js";
 
 function drawDiscs(renderer, x, y, radius, skip) {
     renderer.fillPath(() => {
-        renderer.arc(x, y, radius, 0, Math.PI * 2, skip);
+        renderer.arc(x, y, radius.value, 0, Math.PI * 2, skip);
     });
 }
 
 function drawCircles(renderer, x, y, radius, skip) {
     renderer.strokePath(() => {
-        renderer.arc(x, y, radius, 0, Math.PI * 2, skip);
+        renderer.arc(x, y, radius.value, 0, Math.PI * 2, skip);
     });
 }
 
 function drawSquares(renderer, x, y, radius, skip) {
-    let r = radius * Math.sqrt(2);
+    let r = radius.value * Math.sqrt(2);
     renderer.translate(x, y, () => {
         renderer.fillRect(-r/2, -r/2, r, r, true);
     }, skip)
@@ -22,11 +22,11 @@ function drawSquares(renderer, x, y, radius, skip) {
 function drawDiamonds(renderer, x, y, radius, skip) {
     renderer.translate(x, y, () => {
         renderer.fillPath(() => {
-            renderer.moveTo(-radius, 0, true)
-            renderer.lineTo(0, radius, true);
-            renderer.lineTo(radius, 0, true);
-            renderer.lineTo(0, -radius, true);
-            renderer.lineTo(-radius, 0, true);
+            renderer.moveTo(-radius.value, 0, true)
+            renderer.lineTo(0, radius.value, true);
+            renderer.lineTo(radius.value, 0, true);
+            renderer.lineTo(0, -radius.value, true);
+            renderer.lineTo(-radius.value, 0, true);
         });    
     }, skip);
 }
@@ -35,18 +35,23 @@ function drawDiamonds(renderer, x, y, radius, skip) {
 
 export class GraphPoint extends GraphNode {
     render(renderer, debug) {
-        console.group("Draw point", this.x, this.y);
-        let type = this.listStyleType;
-        if (type === "diamond") {
-            drawDiamonds(renderer, this.x, this.y, this.borderRadius);
-        } else if (type === "circle") {
-            drawCircles(renderer, this.x, this.y, this.borderRadius);
-        } else if (type === "square") {
-            drawSquares(renderer, this.x, this.y, this.borderRadius);
-        } else if (type === "disc") {
-            drawDiscs(renderer, this.x, this.y, this.borderRadius);
-        }
-        console.groupEnd();
+        debug && debug.groupCollapsed("Draw point", this.x, this.y, type, this.borderRadius);
+        renderer.save(() => {
+            renderer.strokeColor = this.color;
+            renderer.fillColor = this.color;
+            renderer.lineWidth = this.borderWidth.value;
+            let type = this.listStyleType;
+            if (type === "diamond") {
+                drawDiamonds(renderer, this.x, this.y, this.borderRadius);
+            } else if (type === "circle") {
+                drawCircles(renderer, this.x, this.y, this.borderRadius);
+            } else if (type === "square") {
+                drawSquares(renderer, this.x, this.y, this.borderRadius);
+            } else if (type === "disc") {
+                drawDiscs(renderer, this.x, this.y, this.borderRadius);
+            }
+        });
+        debug && debug.groupEnd();
     }
 
     _y = undefined
@@ -166,7 +171,7 @@ export default class LineGraph extends GraphNode {
                     this._points = this._points.concat(toGraphPoints(data));
                     this._points.forEach((point) => {
                         this.shadow.appendChild(point);
-                        point.setAttribute("style", "border-radius: " + this.borderRadius + "px");
+                        point.setAttribute("style", "border-radius: " + this.borderRadius.value + this.borderRadius.unit);
                     });
                     index += this._points.length;
                 } catch(ex) {
@@ -211,7 +216,7 @@ export default class LineGraph extends GraphNode {
 
     drawFill(renderer, points, debug) {
         if (this.backgroundColor) {
-            console.group("Draw fill", this.id);
+            debug && debug.groupCollapsed("Draw fill", this.id);
             renderer.save(() => {
                 renderer.fillColor = this.backgroundColor;
                 renderer.fillPath((r) => {
@@ -224,16 +229,16 @@ export default class LineGraph extends GraphNode {
                     renderer.lineTo(prev.x, 0);
                 });
             });
-            console.groupEnd();
+            debug && debug.groupEnd();
         }
     }
 
     drawLines(renderer, points, debug) {
-        if (this.borderWidth) {
-            console.group("Draw lines", this.id);
+        if (this.borderWidth && this.borderWidth.value) {
+            debug && debug.groupCollapsed("Draw lines", this.id);
             renderer.save(() => {
                 renderer.strokeColor = this.borderColor;
-                renderer.lineWidth = this.borderWidth;
+                renderer.lineWidth = this.borderWidth.value;
     
                 renderer.strokePath((r) => {
                     let started = false;
@@ -247,26 +252,22 @@ export default class LineGraph extends GraphNode {
                     });
                 });
             });
-            console.groupEnd();
+            debug && debug.groupEnd();
         }
     }
 
     render(renderer, debug) {
-        console.group("Line graph", this.id);
+        debug && debug.groupCollapsed("Line graph", "#" + this.id);
         let points = this.points;
 
         this.drawFill(renderer, points, debug);
         this.drawLines(renderer, points, debug);
         this.drawPoints(renderer, points, debug);
-        console.groupEnd();
+        debug && debug.groupEnd();
     }
 
     drawPoints(renderer, points) {
         renderer.save(() => {
-            renderer.strokeColor = this.color;
-            renderer.fillColor = this.color;
-            renderer.lineWidth = this.borderWidth;
-
             points.forEach((point) => {
                 point.render(renderer);
             })

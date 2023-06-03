@@ -57,7 +57,7 @@ export default class BarGraph extends GraphNode {
             let offset = this.offset;
             renderer.fillColor = this.backgroundColor;
             renderer.strokeColor = this.borderColor;
-            renderer.lineWidth = this.borderWidth;
+            renderer.lineWidth = this.borderWidth.value;
 
             for (const i of renderer.xAxis.valuesIter()) {
                 renderer.translate(i, null, () => {
@@ -77,7 +77,7 @@ export default class BarGraph extends GraphNode {
         renderer.save(() => {
             renderer.fillColor = this.backgroundColor;
             renderer.strokeColor = this.borderColor;
-            renderer.lineWidth = this.borderWidth;
+            renderer.lineWidth = this.borderWidth.value;
             renderer.fillRect(0, 0, width * 2, height * 2, true);
             renderer.strokeRect(0, 0, width * 2, height * 2, true);
         });
