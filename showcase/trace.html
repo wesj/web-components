@@ -30,8 +30,14 @@ x-graph > x-annotation {
     transition: opacity 1000ms, top 250ms, left 250ms, display 0ms;
 }
 
-x-axis {
-    border: 1px solid rgb(220,220,220);
+x-data {
+    list-style-type: disc;
+    border-radius: 5px;
+    color: blue;
+}
+
+x-grid-ticks {
+    width: 100%;
 }
 
 x-graph:hover > x-annotation {
@@ -49,11 +55,18 @@ x-annotation {
         <h1>Annotation</h1>
         <h2>Description</h2>
         <p>Allows showing an annotation on a graph.</p>
+        <p>TODO: Right now annotations have to re-render the graph when their position updates, but we shouldn't need to do that</p>
         <h2>Demos</h2>
         <x-demo>
             <x-graph id="graph" style="position: relative; display: block; width: 800px; height:400px;">
-                <x-axis></x-axis>
-                <y-axis></y-axis>
+                <x-axis>
+                    <x-grid-ticks></x-grid-ticks>
+                    <x-grid-labels></x-grid-labels>
+                </x-axis>
+                <y-axis>
+                    <x-grid-ticks></x-grid-ticks>
+                    <x-grid-labels></x-grid-labels>
+                </y-axis>
                 <x-data id="data">[1,2,3,4,5]</x-data>
                 <x-annotation style="background-color: #cad2c5;" x="1" y="2">This is at (1, 2)</x-annotation>
                 <x-annotation id="annotation" style="background-color: #84a98c;"></x-annotation>

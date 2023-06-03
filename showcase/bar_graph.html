@@ -8,12 +8,15 @@ import Legeend from "../src/graph/legend.js";
 import DemoSection from './DemoSection.js';
         </script>
         <style>
-.green {
+.middle {
     border: 3px solid #fb5607;
     background-color: #fb5607AA;
 }
 .graph {
-    position: relative; display: block; width: 800px; height:400px;
+    position: relative;
+    display: block;
+    width: 800px;
+    height:400px;
 }
         </style>
     </head>
@@ -25,36 +28,49 @@ import DemoSection from './DemoSection.js';
         <h3>A graph with vertical bars</h3>
         <x-demo>
             <x-graph class="graph">
-                <x-axis></x-axis>
-                <y-axis></y-axis>
-                <x-bar style="border: 5px solid #ffbe0b; background-color: #ffbe0bAA;">{ "January": 1, "February": 2, "March": 3 }</x-bar>
-                <x-bar class="green">{ "January": 5, "February": 4, "March": 3 }</x-bar>
-                <x-bar style="border: 1px solid #3a86ff; background-color: #3a86ffAA;">{ "January": 6, "February": 2, "March": 1 }</x-bar>
+                <x-axis>
+                    <x-grid-labels></x-grid-labels>
+                </x-axis>
+                <y-axis>
+                    <x-grid-ticks></x-grid-ticks>
+                    <x-grid-labels></x-grid-labels>
+                </y-axis>
+                <x-bars style="padding-left: .1%; border: 5px solid #ffbe0b; background-color: #ffbe0bAA;">{ "January": 1, "February": 2, "March": 3 }</x-bars>
+                <x-bars class="middle">
+                    <x-bar x="January">5</x-bar>
+                    <x-bar x="February">5</x-bar>
+                    <x-bar x="March">5</x-bar>
+                </x-bars>
+                <x-bars style="padding-right: .1%; border: 1px solid #3a86ff; background-color: #3a86ffAA;">[
+                    { "x": "January",  "y": 6 },
+                    { "x": "February", "y": 2 },
+                    { "x": "March",    "y": 1 }
+                ]</x-bars>
             </x-graph>
         </x-demo>
         <h3>A graph with horizontal bars</h3>
         <x-demo>
-            <x-graph class="graph">
-                <x-axis></x-axis>
-                <y-axis></y-axis>
-                <x-bar style="border: 5px solid #8338ec; background-color: #8338ecAA;">{ "January": 1, "February": 2, "March": 3 }</x-bar>
-                <x-bar class="green">{ "January": 5, "February": 4, "March": 3 }</x-bar>
-                <x-bar style="border: 1px solid #ff006e; background-color: #ff006eAA;">{ "January": 6, "February": 2, "March": 1 }</x-bar>
+            <x-graph style="padding: .1%; background-color: #004b23; border-radius: 10px;" class="graph">
+                <x-axis id="x2" min="0" max="100" style="border-color: white; color: white;">
+                    <x-grid-ticks></x-grid-ticks>
+                    <x-grid-labels></x-grid-labels>
+                </x-axis>
+                <y-axis id="y2" min="0" max="7" style="border-color: white; color: white;">
+                    <x-grid-ticks></x-grid-ticks>
+                    <x-grid-labels></x-grid-labels>
+                </y-axis>
+                <x-bars xaxis="#y2" yaxis="#x2" style="padding: .1%; background-color: #38b000;">[65, 59, 80, 81, 56, 55, 40]</x-bars>
             </x-graph>
         </x-demo>
         <h2>Properties</h2>
-        <dl>
-            <dt>width</dt>
-            <dd>Controls the width of each bar, in graph units</dd>
-            <dt>offset</dt>
-            <dd>Controls the offset of each bar from its root position (this should probably be a css translation instead?)</dd>
-        </dl>
         <h2>Styles</h2>
         <dl>
             <dt>border</dt>
             <dd>Controls borders round the bar</dd>
             <dt>background-color</dt>
             <dd>Controls the fill shown behind the graph</dd>
+            <dt>width</dt>
+            <dd>Controls the width of each bar, in graph units</dd>
         </dl>
     </body>
 </html>

@@ -1,11 +1,158 @@
-import GraphNode from "./graph_node.js";
+import GraphNode, {getCachedFloatAttr} from "./graph_node.js";
 
 const Directions = {
     X: "x",
     Y: "y"
 }
 
+export class GridTicks extends GraphNode {
+    get width() {
+        return getCachedFloatAttr(this, "width", 3);
+    }
+
+    drawTick(renderer, value, position, size) {
+        renderer.strokePath(() => {
+            if (this.parentNode.direction === Directions.X) {
+                renderer.translate(value, position, () => {
+                    renderer.moveTo(0, -size, true);
+                    renderer.lineTo(0, size, true);
+                })
+            } else {
+                renderer.translate(position, value, () => {
+                    renderer.moveTo(-size, 0, true);
+                    renderer.lineTo(size, 0, true);
+                })
+            }
+        })
+    }
+
+    render(renderer, debug) {
+        debug && debug.groupCollapsed("Draw ticks");
+        let values = this.parentNode.values;
+        let position = this.parentNode.position(renderer);
+        let size = this.width;
+
+        if (!values || !(this.parentNode instanceof Axis)) {
+            console.error("Ticks must be a child of an Axis");
+            return;
+        }
+
+        renderer.save(() => {
+            if (typeof(values[0]) === "number") {
+                let range = this.parentNode.max - this.parentNode.min;
+                let spacing = range / 10;
+                if (spacing < 1) spacing = 1;
+                for (var i = 0; i < this.parentNode.max; i+= spacing) {
+                    if (i > this.parentNode.min) {
+                        this.drawTick(renderer, i, position, size);
+                    }
+                }
+                for (var i = -spacing; i > this.parentNode.min; i-= spacing) {
+                    if (i < this.parentNode.max) {
+                        this.drawTick(renderer, i, position, size);
+                    }
+                }
+            } else {
+                values.forEach((value) => {
+                    this.drawTick(renderer, value, position, size);
+                })
+            }
+        });
+        debug && debug.groupEnd();
+    }
+}
+customElements.define("x-grid-ticks", GridTicks);
+
+class GridLabels extends GraphNode {
+    render(renderer, debug) {
+        debug && debug.groupCollapsed("Draw labels");
+        renderer.font = this.font;
+        let values = this.parentNode.values;
+        let position = this.parentNode.position(renderer);
+
+        if (!values || !(this.parentNode instanceof Axis)) {
+            console.error("Labels must be a child of an Axis");
+            return;
+        }
+
+        if (typeof(values[0]) === "number") {
+            this.renderNumbers(renderer, position, debug);
+        } else {
+            this.renderValues(renderer, values, position, debug)
+        }
+        debug && debug.groupEnd();        
+    }
+
+    renderNumbers(renderer, position, debug) {
+        let range = this.parentNode.max - this.parentNode.min;
+        let spacing = range / 10;
+        if (spacing < 1) spacing = 1;
+        for (var i = 0; i < this.parentNode.max; i+= spacing) {
+            i = Math.round(i * 10) / 10;
+            if (i > this.parentNode.min) {
+                if (this.parentNode.direction === "x") {
+                    this.drawValue(renderer, i, i, position, this.fontSize.value);
+                } else {
+                    this.drawValue(renderer, i, position, i, -this.fontSize.value);
+                }
+            }
+        }
+        for (var i = -spacing; i > this.parentNode.min; i-= spacing) {
+            if (i < this.parentNode.max) {
+                if (this.parentNode.direction === "x") {
+                    this.drawValue(renderer, i, i, position, this.fontSize.value)
+                } else {
+                    this.drawValue(renderer, i, position, i, -this.fontSize.value)
+                }
+            }
+        }
+    }
+
+    drawValue(renderer, value, x, y, offset) {
+        let txt = value;
+        let textSize = renderer.measureText(txt);
+        renderer.translate(x, y, () => {
+            if (typeof(txt) === "number") {
+                if (this.parentNode.direction === "x") {
+                    renderer.drawText(txt, -textSize.width / 2, offset, true);
+                } else {
+                    renderer.drawText(txt, -textSize.width - 5, 3, true);
+                }
+            } else {
+                // Offset text labels to be between the tick marks
+                if (this.parentNode.direction === "x") {
+                    renderer.translate(0.5, null, () => {
+                        renderer.drawText(txt, -textSize.width / 2, offset, true);
+                    });
+                } else {
+                    renderer.translate(null, 0.5, () => {
+                        renderer.drawText(txt, -offset, 0, true);
+                    });
+                }
+            }
+        })
+    }
+
+    renderValues(renderer, values, position, debug) {
+        if (this.parentNode.direction === "x") {
+            values.forEach((value) => {
+                this.drawValue(renderer, value, value, position, this.fontSize.value);
+            });
+        } else {
+            values.forEach((value) => {
+                this.drawValue(renderer, value, position, value, this.fontSize.value / 4);
+            });
+        }
+    }
+}
+customElements.define("x-grid-labels", GridLabels);
+
 export default class Axis extends GraphNode {
+    constructor() {
+        super();
+        this.shadow = this.attachShadow({ mode: "open" });
+    }
+
     get min() {
         if (!("_min" in this)) {
             if (this.hasAttribute("min")) { 
@@ -26,26 +173,6 @@ export default class Axis extends GraphNode {
             }
         }
         return this._max;
-    }
-
-    get resolution() {
-        if (!("_resolution" in this)) {
-            if (this.hasAttribute("resolution")) { 
-                this._resolution =  parseFloat(this.getAttribute("resolution"));
-            } else {
-                this._resolution = (this.max - this.min) / 50;
-            }
-        }
-        return this._resolution;
-    }
-
-    get ticks() {
-        if (!("_ticks" in this)) {
-            if (this.hasAttribute("ticks")) { 
-                this._ticks =  this.getAttribute("ticks");
-            }
-        }
-        return this._ticks || "grid";
     }
 
      toCanvasCoords(value, realSize) {
@@ -120,14 +247,13 @@ export default class Axis extends GraphNode {
 
     _values = [];
     _valuesAreNumbers = true;
-    setup(graph, crossAxis) {
+    setup(graph) {
         if (this.hasAttribute("values")) {
             return;
         }
 
         let points = graph.points;
         if (points) {
-
             let keys;
 
             if (this.direction === Directions.X) {
@@ -149,7 +275,7 @@ export default class Axis extends GraphNode {
                     } else {
                         this._valuesAreNumbers = false;
                     }
-                } catch(ex) { }
+                } catch(ex) { console.error(ex); }
 
                 if (this._values.indexOf(key) == -1) {
                     this._values.push(key);
@@ -183,37 +309,41 @@ export default class Axis extends GraphNode {
         }
     }
 
+    position(renderer) {
+        let position = 0;
+        if (this.style.position === "absolute") {
+            if (this.direction === Directions.Y) {
+                if (this.style.right !== "") {
+                    position = renderer.xAxis.max;
+                } else if (this.style.left !== undefined) {
+                    position = renderer.xAxis.min;
+                }
+            } else {
+                if (this.style.top !== "") {
+                    position = renderer.yAxis.max;
+                } else if (this.style.bottom !== undefined) {
+                    position = renderer.yAxis.min;
+                }
+            }
+        }
+        return position;
+    }
+
     render(renderer, debug) {
-        console.group("Render axis", this.direction, this.min, this.max, this._values);
+        debug && debug.groupCollapsed("Render axis", this.direction, this.min, this.max, this._values);
         renderer.save(() => {
             renderer.strokeColor = this.borderColor;
             renderer.fillColor = this.color;
-            renderer.lineWidth = this.borderWidth;
+            renderer.lineWidth = this.borderWidth.value;
     
-            let position = 0;
-            if (this.style.position === "absolute") {
-                if (this.direction === Directions.Y) {
-                    if (this.style.right !== "") {
-                        position = renderer.xAxis.max;
-                    } else if (this.style.left !== undefined) {
-                        position = renderer.xAxis.min;
-                    }
-                } else {
-                    if (this.style.top !== "") {
-                        position = renderer.yAxis.max;
-                    } else if (this.style.bottom !== undefined) {
-                        position = renderer.yAxis.min;
-                    }
-                }
-            }
-            this.drawAxis(renderer, position, debug);    
-            this.drawGrid(renderer, position, debug);
+            this.drawAxis(renderer, this.position(renderer), debug);
+            this.drawChildren(renderer, debug);
         });
-        console.groupEnd();
+        debug && debug.groupEnd();
     }
 
-    drawAxis(renderer, position) {
-        console.log("Draw axis " + this.id, position);
+    drawAxis(renderer, position, debug) {
+        debug && debug.groupCollapsed("Draw axis " + this.id, position);
         renderer.strokePath(() => {
             if (this.direction === Directions.X) {
                 renderer.moveTo(this.min, position);
@@ -223,6 +353,7 @@ export default class Axis extends GraphNode {
                 renderer.lineTo(position, this.max);
             }
         });
+        debug && debug.groupEnd();
     }
 
     get values() {
@@ -231,10 +362,8 @@ export default class Axis extends GraphNode {
             this._values = this.getAttribute("values").split(/\s+/).map((val) => {
                 let keyFloat = parseFloat(val);
                 if (!isNaN(keyFloat)) {
-                    console.log("Key,", val, "is a number")
                     return keyFloat;
                 }
-                console.log("Key,", val, "is not a number")
                 this._this._valuesAreNumbers = false;
                 return val;
             });
@@ -244,6 +373,11 @@ export default class Axis extends GraphNode {
             this._max = Math.ceil(this._max * 1.1);
         }
         return this._values
+    }
+
+    // Controls the resolution used for functions. We should probably just calculate this based on the screen
+    get resolution() {
+        return getCachedFloatAttr(this, "resultion", (this.max - this.min) / 50);
     }
 
     * valuesIter() {
@@ -257,120 +391,6 @@ export default class Axis extends GraphNode {
             for (var i = this.min; i < this.max; i += step) {
                 yield i;
             }
-        }
-    }
-
-    drawGrid(renderer, position, debug) {
-        console.log("Draw grid " + this.id);
-        if (this.ticks) {
-            renderer.save(() => {
-                let size = 6;
-                let small_size = 4;
-                if (this.values && !this._valuesAreNumbers) {
-                    for (let val of this.valuesIter()) {
-                        if (this.ticks === "major") {
-                            this.drawTick(renderer, val, position, -size, size, true);
-                        } else if (this.ticks === "minor") {
-                            let small_space = space / 5;
-                            this.drawTick(renderer, val, position, -size, size, true);
-                        } else if (this.ticks === "grid") {
-                            renderer.strokeColor = "rgb(200,200,200)";
-                            if (this.direction === Directions.X) {
-                                this.drawTick(renderer, val, position, renderer.yAxis.min, renderer.yAxis.max, false);
-                            } else {
-                                this.drawTick(renderer, val, position, renderer.xAxis.min, renderer.xAxis.max, false);
-                            }
-                        }
-                    }                    
-                } else {
-                    let space = 1;
-                    if (this.ticks === "major") {
-                        this.drawTicks(renderer, space, position, -size, size, true);
-                    } else if (this.ticks === "minor") {
-                        let small_space = space / 5;
-                        this.drawTicks(renderer, space, position, -size, size, true);
-                        this.drawTicks(renderer, small_space, position, -small_size, small_size, true);
-                    } else if (this.ticks === "grid") {
-                        renderer.strokeColor = "rgb(200,200,200)";
-                        if (this.direction === Directions.X) {
-                            this.drawTicks(renderer, space, position, renderer.yAxis.min, renderer.yAxis.max, false);
-                        } else {
-                            this.drawTicks(renderer, space, position, renderer.xAxis.min, renderer.xAxis.max, false);
-                        }
-                    }
-                }
-            });
-        }
-    }
-
-    drawTick(renderer, value, position, sizeA, sizeB, skipTransform) {
-        renderer.strokePath(() => {
-            if (this.direction === "x") {
-                if (skipTransform) {
-                    renderer.translate(value, position, () => {
-                        renderer.moveTo(0, sizeA, skipTransform);
-                        renderer.lineTo(0, sizeB, skipTransform);
-                    })
-                } else {
-                    // console.log("Draw tick2", value, position + sizeA);
-                    renderer.moveTo(value, position + sizeA);
-                    renderer.lineTo(value, position + sizeB);
-                }
-            } else {
-                if (skipTransform) {
-                    renderer.translate(position, value, () => {
-                        renderer.moveTo(sizeA, 0, skipTransform);
-                        renderer.lineTo(sizeB, 0, skipTransform);
-                    })
-                } else {
-                    renderer.moveTo(position + sizeA, value);
-                    renderer.lineTo(position + sizeB, value);
-                }
-            }
-        })
-
-        if (this.labels) {
-            let txt = value;
-            renderer.font = this.font;
-            let textSize = renderer.measureText(txt);
-
-            if (this.direction === "x") {
-                renderer.translate(value, position, () => {
-                    if (this._valuesAreNumbers) {
-                        renderer.drawText(txt, -textSize.width / 2, this.fontSize * 1, true);
-                    } else {
-                        // Offset text labels to be between the tick marks
-                        renderer.translate(0.5, null, () => {
-                            renderer.drawText(txt, -textSize.width / 2, this.fontSize * 1, true);
-                        });
-                    }
-                })
-            } else {
-                renderer.translate(position, value, () => {
-                    renderer.drawText(txt, -textSize.width - this.fontSize / 2, this.fontSize / 4, true);
-                })
-            }
-        }
-    }
-
-    // TODO: This has too many arguments
-    drawTicks(renderer, space, position, sizeA, sizeB, skipTransform) {
-        let val = 0;
-        while (val <= this.max) {
-            if (val >= this.min) {
-                val = Math.round(val * 10) / 10;
-                this.drawTick(renderer, val, position, sizeA, sizeB, skipTransform);
-            }
-            val += space;
-        }
-
-        val = 0;
-        while (val >= this.min) {
-            if (val !== 0) {
-                val = Math.round(val * 10) / 10;
-                this.drawTick(renderer, val, position, sizeA, sizeB, skipTransform);
-            }
-            val -= space;
         }
     }
 

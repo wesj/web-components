@@ -27,7 +27,7 @@ export default class Renderer {
         let p2 = this.toScreenCoords(x + w, y + h, skipTransform);
         w = p2[0] - p[0];
         h = p2[1] - p[1];
-        // console.log("fillrect", p, p2);
+        console.log("fillrect", p, w, h);
         this.ctx.fillRect(p[0], p[1], w, h);
     }
 

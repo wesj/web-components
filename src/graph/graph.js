@@ -6,9 +6,9 @@ export default class Graph extends HTMLElement {
         super();
         this.renderer = renderer || new Renderer(this);
         // this.appendChild(this.renderer.root);
-        const shadow = this.attachShadow({ mode: "closed" });
-        shadow.appendChild(document.createElement("slot"));
-        shadow.appendChild(this.renderer.root);
+        this.shadow = this.attachShadow({ mode: "closed" });
+        this.shadow.appendChild(document.createElement("slot"));
+        this.shadow.appendChild(this.renderer.root);
 
         this.observer = new MutationObserver((event) => {
             if (this.parentNode) {
@@ -46,7 +46,7 @@ export default class Graph extends HTMLElement {
                 window.requestAnimationFrame(() => {
                     this._needsRender = null;
                     this.setup();
-                    this.render(debug);
+                    this.render(console);
                     resolve();
                 })                    
             })
@@ -97,8 +97,8 @@ export default class Graph extends HTMLElement {
         return { left, right, top, bottom };
     }
 
-    render(debug = () => { }) {
-        console.group("Render " + this.id);
+    render(debug) {
+        debug && debug.group("Render " + this.id);
         let offset = this.getOffset();
         this.renderer.xAxis = this.xAxis[0];
         this.renderer.yAxis = this.yAxis[0];
@@ -107,22 +107,20 @@ export default class Graph extends HTMLElement {
             let style = window.getComputedStyle(this);
             this.renderer.height = this.clientHeight - offset.top - offset.bottom - parseInt(style.paddingTop) - parseInt(style.paddingBottom);
             this.renderer.width = this.clientWidth - offset.left - offset.right - parseInt(style.paddingLeft) - parseInt(style.paddingRight);
-            // this.drawYAxis(debug);
-            // this.drawXAxis(debug);
-            this.renderChildren(debug);    
+            this.renderChildren(debug);
         }, true);
 
-        console.groupEnd();
+        debug && debug.groupEnd();
     }
 
     getXAxisFor(child) {
-        if (child.nodeName === "X-AXIS" && child.direction === "x") {
+        if (child instanceof Axis && child.direction === "x") {
             return child;
         }
 
         if (child.hasAttribute("xAxis")) {
             let name = child.getAttribute("xAxis");
-            let a = this.querySelector("x-axis[direction='x']#" + name);
+            let a = this.querySelector(name);
             if (a) {
                 return a;   
             }
@@ -132,13 +130,13 @@ export default class Graph extends HTMLElement {
     }
 
     getYAxisFor(child) {
-        if (child.nodeName === "X-AXIS" && child.direction === "y" || child.nodeName === "Y-AXIS") {
+        if (child instanceof Axis && child.direction === "y") {
             return child;
         }
 
         if (child.hasAttribute("yAxis")) {
             let name = child.getAttribute("yAxis");
-            let a = this.querySelector("y-axis#" + name + ", x-axis[direction='y']#" + name);
+            let a = this.querySelector(name);
             if (a) {
                 return a;   
             }
@@ -150,21 +148,12 @@ export default class Graph extends HTMLElement {
     renderChildren(debug) {
         for (var i = 0; i < this.childNodes.length; i++) {
             let child = this.childNodes[i];
-            if (child.render) { // && !(child instanceof Axis)) {
+            if (child.render) {
                 this.renderer.xAxis = this.getXAxisFor(child);
                 this.renderer.yAxis = this.getYAxisFor(child);
                 child.render(this.renderer, debug);
             }
         }
-    }
-
-    drawYAxis(debug = () => { }) {
-        let xAxis = this.xAxis[0];
-        this.yAxis.forEach((axis) => {
-            this.renderer.xAxis = xAxis;
-            this.renderer.yAxis = axis;
-            axis.render(this.renderer, debug);
-        })
     }
 
     set yAxis(val) {
@@ -177,6 +166,7 @@ export default class Graph extends HTMLElement {
             if (!this._yAxis || this._yAxis.length == 0) {
                 let axis = new Axis();
                 axis.setAttribute("direction", "y");
+                this.shadow.appendChild(axis);
                 this._yAxis = [axis];
             }
         }
@@ -193,19 +183,11 @@ export default class Graph extends HTMLElement {
             if (!this._xAxis || this._xAxis.length == 0) {
                 let axis = new Axis();
                 axis.setAttribute("direction", "x");
+                this.shadow.appendChild(axis);
                 this._xAxis = [axis];
             }
         }
         return this._xAxis;
-    } 
-
-    drawXAxis(debug = () => { }) {
-        let yAxis = this.yAxis[0];
-        this.xAxis.forEach((axis) => {
-            this.renderer.xAxis = axis;
-            this.renderer.yAxis = yAxis;
-            axis.render(this.renderer, debug);
-        })
     }
 }
 
