@@ -247,7 +247,7 @@ export default class Axis extends GraphNode {
 
     _values = [];
     _valuesAreNumbers = true;
-    setup(graph, crossAxis) {
+    setup(graph) {
         if (this.hasAttribute("values")) {
             return;
         }

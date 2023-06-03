@@ -114,13 +114,13 @@ export default class Graph extends HTMLElement {
     }
 
     getXAxisFor(child) {
-        if (child.nodeName === "X-AXIS" && child.direction === "x") {
+        if (child instanceof Axis && child.direction === "x") {
             return child;
         }
 
         if (child.hasAttribute("xAxis")) {
             let name = child.getAttribute("xAxis");
-            let a = this.querySelector("x-axis[direction='x']#" + name);
+            let a = this.querySelector(name);
             if (a) {
                 return a;   
             }
@@ -130,13 +130,13 @@ export default class Graph extends HTMLElement {
     }
 
     getYAxisFor(child) {
-        if (child.nodeName === "X-AXIS" && child.direction === "y" || child.nodeName === "Y-AXIS") {
+        if (child instanceof Axis && child.direction === "y") {
             return child;
         }
 
         if (child.hasAttribute("yAxis")) {
             let name = child.getAttribute("yAxis");
-            let a = this.querySelector("y-axis#" + name + ", x-axis[direction='y']#" + name);
+            let a = this.querySelector(name);
             if (a) {
                 return a;   
             }

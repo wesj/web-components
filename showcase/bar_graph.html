@@ -51,30 +51,26 @@ import DemoSection from './DemoSection.js';
         <h3>A graph with horizontal bars</h3>
         <x-demo>
             <x-graph style="padding: .1%; background-color: #004b23; border-radius: 10px;" class="graph">
-                <x-axis min="0" max="7" style="border-color: white; color: white;">
+                <x-axis id="x2" min="0" max="100" style="border-color: white; color: white;">
                     <x-grid-ticks></x-grid-ticks>
                     <x-grid-labels></x-grid-labels>
                 </x-axis>
-                <y-axis min="0" max="100" style="border-color: white; color: white;">
+                <y-axis id="y2" min="0" max="7" style="border-color: white; color: white;">
                     <x-grid-ticks></x-grid-ticks>
                     <x-grid-labels></x-grid-labels>
                 </y-axis>
-                <x-bars style="padding: .1%; background-color: #38b000;" orientation="horizontal">[65, 59, 80, 81, 56, 55, 40]</x-bars>
+                <x-bars xaxis="#y2" yaxis="#x2" style="padding: .1%; background-color: #38b000;">[65, 59, 80, 81, 56, 55, 40]</x-bars>
             </x-graph>
         </x-demo>
         <h2>Properties</h2>
-        <dl>
-            <dt>width</dt>
-            <dd>Controls the width of each bar, in graph units</dd>
-            <dt>offset</dt>
-            <dd>Controls the offset of each bar from its root position (this should probably be a css translation instead?)</dd>
-        </dl>
         <h2>Styles</h2>
         <dl>
             <dt>border</dt>
             <dd>Controls borders round the bar</dd>
             <dt>background-color</dt>
             <dd>Controls the fill shown behind the graph</dd>
+            <dt>width</dt>
+            <dd>Controls the width of each bar, in graph units</dd>
         </dl>
     </body>
 </html>
