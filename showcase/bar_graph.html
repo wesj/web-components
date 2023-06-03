@@ -25,11 +25,24 @@ import DemoSection from './DemoSection.js';
         <h3>A graph with vertical bars</h3>
         <x-demo>
             <x-graph class="graph">
-                <x-axis></x-axis>
-                <y-axis></y-axis>
-                <x-bar style="border: 5px solid #ffbe0b; background-color: #ffbe0bAA;">{ "January": 1, "February": 2, "March": 3 }</x-bar>
-                <x-bar class="green">{ "January": 5, "February": 4, "March": 3 }</x-bar>
-                <x-bar style="border: 1px solid #3a86ff; background-color: #3a86ffAA;">{ "January": 6, "February": 2, "March": 1 }</x-bar>
+                <x-axis>
+                    <x-grid-labels></x-grid-labels>
+                </x-axis>
+                <y-axis>
+                    <x-grid-ticks></x-grid-ticks>
+                    <x-grid-labels></x-grid-labels>
+                </y-axis>
+                <x-bars style="border: 5px solid #ffbe0b; background-color: #ffbe0bAA;">{ "January": 1, "February": 2, "March": 3 }</x-bars>
+                <x-bars class="green">
+                    <x-bar x="January">5</x-bar>
+                    <x-bar x="February">5</x-bar>
+                    <x-bar x="March">5</x-bar>
+                </x-bars>
+                <x-bars style="border: 1px solid #3a86ff; background-color: #3a86ffAA;">[
+                    { "x": "January",  "y": 6 },
+                    { "x": "February", "y": 2 },
+                    { "x": "March",    "y": 1 }
+                ]</x-bars>
             </x-graph>
         </x-demo>
         <h3>A graph with horizontal bars</h3>
@@ -37,9 +50,9 @@ import DemoSection from './DemoSection.js';
             <x-graph class="graph">
                 <x-axis></x-axis>
                 <y-axis></y-axis>
-                <x-bar style="border: 5px solid #8338ec; background-color: #8338ecAA;">{ "January": 1, "February": 2, "March": 3 }</x-bar>
-                <x-bar class="green">{ "January": 5, "February": 4, "March": 3 }</x-bar>
-                <x-bar style="border: 1px solid #ff006e; background-color: #ff006eAA;">{ "January": 6, "February": 2, "March": 1 }</x-bar>
+                <x-bar style="border: 5px solid #8338ec; background-color: #8338ecAA;">{ "January": 1, "February": 2, "March": 3 }</x-bars>
+                <x-bar class="green">{ "January": 5, "February": 4, "March": 3 }</x-bars>
+                <x-bar style="border: 1px solid #ff006e; background-color: #ff006eAA;">{ "January": 6, "February": 2, "March": 1 }</x-bars>
             </x-graph>
         </x-demo>
         <h2>Properties</h2>

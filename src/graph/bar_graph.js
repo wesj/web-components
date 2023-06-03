@@ -1,76 +1,189 @@
 import GraphNode from "./graph_node.js";
 
+function cacheFloatAttribute(node, attr) {
+    let key = "_" + attr + "_";
+    if (node[key]) {
+        return node[key];
+    }
+
+    if (node.hasAttribute(attr)) {
+        let val = node.getAttribute(attr);
+        if (attr === "x") console.log("Got", val, attr);
+        try {
+            let parsed = parseFloat(val);
+            if (!isNaN(parsed)) {
+                node[key] = parsed;
+            } else {
+                node[key] = val;
+            }
+        } catch(ex) {
+            console.error("Could not parse", val, ex);
+            node[key] = val;
+        }
+    }
+    return node[key];
+}
+
+export class BarNode extends GraphNode {
+    render(renderer, debug) {
+        debug.groupCollapsed("Draw bar", this.id, this.x, this.y);
+        renderer.translate(this.x, null, () => {
+            renderer.fillColor = this.backgroundColor;
+            renderer.strokeColor = this.borderColor;
+            renderer.lineWidth = this.borderWidth.value;
+
+            // Because of weird coordinate system issues, we basically have to do
+            // all the coordinate system transforms here for this to work.
+            let p1 = renderer.toScreenCoords(0, 0);
+            let p2 = renderer.toScreenCoords(this.width.value, this.y);
+            console.log(p1, p2);
+            let x = p1[0];
+            let y = p1[1];
+            let w = p2[0] - p1[0];
+            let h = p2[1] - p1[1];
+            console.log("Rect", x, y, w, h);
+            renderer.fillRect(x, y, w, h, true);
+            renderer.strokeRect(x, y, w, h, true);    
+        });
+        debug.groupEnd();
+    }
+
+    _y = undefined
+    get y() {
+        let val = cacheFloatAttribute(this, "y")
+        if (!val) {
+            try {
+                this._y_ = parseFloat(this.textContent);
+            } catch(ex) {
+                this._y_ = this.textContent;
+            }    
+        }
+
+        return this._y_;
+    }
+    set y(val) {
+        this.textContent = val;
+        this._y_ = val;
+    }
+
+    _x_ = undefined
+    get x() {
+        return cacheFloatAttribute(this, "x");
+    }
+    set x(val) {
+        this.setAttribute("x", val);
+        this._x_ = val;
+    }
+ 
+    style = {};
+
+    distanceTo(x, y) {
+        let dx = this.x - x;
+        let dy = this.y - y;
+        return dx * dx + dy * dy;
+    }
+}
+
+customElements.define("x-bar", BarNode);
+
+function numberToBar(num, x) {
+    let point = new BarNode();
+    point.y = num;
+    point.x = x;
+    return point;
+}
+
+function arrayToBars(data) {
+    return data.map((d, index) => {
+        if (d instanceof Object) {
+            return objectToBar(d);
+        } else {
+            return numberToBar(d, index);
+        }
+    })
+}
+
+function objectToBar(obj, x) {
+    let point = new BarNode();
+    point.y = obj.y;
+    point.x = x || obj.x;
+    // point.style = obj.style;
+    return point;
+}
+
+function objectToBars(data) {
+    return Object.keys(data).map((x) => {
+        let d = data[x];
+        if (d instanceof Object) {
+            return objectToBar(d, x);
+        } else {
+            return numberToBar(d, x);
+        }
+    })
+}
+
+function toBars(data) {
+    if (Array.isArray(data)) {
+        return arrayToBars(data);
+    } else {
+        return objectToBars(data);
+    }
+}
+
 export default class BarGraph extends GraphNode {
+    constructor() {
+        super();
+        this.shadow = this.attachShadow({ mode: "open" });
+    }
+
     get points() {
         if (this._points) {
             return this._points;
         }
 
-        try {
-            this._points = JSON.parse(this.textContent);
-            this.style.display = "none";
-        } catch(ex) {
-            console.error("Error parsing", ex, this.textContent);
+        this._points = [];
+        let index = 0; 
+
+        let nodes = this.parentNode.parentNode.querySelectorAll("x-bars");
+        let width = 1 / nodes.length;
+
+        for (var i = 0; i < this.childNodes.length; i++) {
+            let child = this.childNodes[i];
+            if (child instanceof Text && child.textContent.trim()) {
+                try {
+                    let data = JSON.parse(child.textContent);
+                    this._points = this._points.concat(toBars(data));
+                    this._points.forEach((point) => {
+                        point.setAttribute("style", `
+                            width: ${width}%;
+                            background-color: ${this.backgroundColor};
+                            border-color: ${this.borderColor};
+                            border-width: ${this.borderWidth};`);
+                        this.shadow.appendChild(point);
+                    });
+                    index += this._points.length;
+                } catch(ex) {
+                    console.log("Can't parse", child.textContent, ex);
+                }
+            } else if (child instanceof BarNode) {
+                if (!child.x) child.x = index;
+                child.style.width = width + "%";
+                this._points.push(child);
+            }
+            index += 1;
         }
 
-        // this._points.push(null);
+        this.style.display = "none";
         return this._points;
     }
 
-    getValueAt(i, points) {
-        return points[i+1];
-    }
-
-    get spacing() {
-        return 0.2;
-    }
-
-    get width() {
-        if (this.hasAttribute("width")) {
-            return parseFloat(this.getAttribute("width"));
-        }
-
-        if (this.parentNode) {
-            let nodes = this.parentNode.querySelectorAll("x-bar");
-            return (1 - this.spacing) / nodes.length;
-        }
-
-        return 1;
-    }
-
     get offset() {
-        if (this.hasAttribute("offset")) {
-            return parseFloat(this.getAttribute("offset"));
-        }
-
-        let nodes = this.parentNode.querySelectorAll("x-bar");
+        let nodes = this.parentNode.querySelectorAll("x-bars");
+        let offset = 1 / nodes.length;
         for (var i = 0; i < nodes.length; i++) {
-            if (nodes[i] === this) return this.spacing / 2 + this.width * i;
+            if (nodes[i] === this) return offset * i;
         }
-        return this.spacing / 2;
-    }
-
-    drawBars(renderer, points, debug) {
-        console.group("Draw bars " + this.id);
-        renderer.save(() => {
-            let w = this.width;
-            let offset = this.offset;
-            renderer.fillColor = this.backgroundColor;
-            renderer.strokeColor = this.borderColor;
-            renderer.lineWidth = this.borderWidth.value;
-
-            for (const i of renderer.xAxis.valuesIter()) {
-                renderer.translate(i, null, () => {
-                    // Because of weird coordinate system issues, we basically have to do
-                    // all the coordinate system transforms here for this to work.
-                    let p1 = renderer.toScreenCoords(offset, 0, offset+w);
-                    let p2 = renderer.xAxis.toScreenCoords(offset + w, points[i]);
-                    renderer.fillRect(p1[0], p1[1], p2[0] - p1[0], p2[1] - p1[1], true);
-                    renderer.strokeRect(p1[0], p1[1], p2[0] - p1[0], p2[1] - p1[1], true);
-                });
-            }
-        });
-        console.groupEnd();
+        return 0;
     }
 
     drawIndicator(renderer, width, height) {
@@ -84,12 +197,14 @@ export default class BarGraph extends GraphNode {
     }
 
     render(renderer, debug) {
-        console.group("Render bars");
-        let points = this.points;
-
-        this.drawBars(renderer, points, debug);
-        console.groupEnd();
+        debug.groupCollapsed("Render bars");
+        renderer.translate(this.offset, null, () => {
+            this.points.forEach((point, index) => {
+                point.render(renderer, debug);
+            })
+        });
+        debug.groupEnd();
     }
 }
 
-customElements.define("x-bar", BarGraph);
+customElements.define("x-bars", BarGraph);

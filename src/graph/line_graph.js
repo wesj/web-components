@@ -31,7 +31,21 @@ function drawDiamonds(renderer, x, y, radius, skip) {
     }, skip);
 }
 
+function cacheFloatAttribute(node, attr) {
+    let key = "_" + attr + "_";
+    if (node[key]) {
+        return node[key];
+    }
 
+    if (node.hasAttribute(attr)) {
+        try {
+            node[key] = parseFloat(node.getAttribute(attr));
+        } catch(ex) {
+            node[key] = node.getAttribute(attr);
+        }
+    }
+    return node[key];
+}
 
 export class GraphPoint extends GraphNode {
     render(renderer, debug) {
@@ -56,44 +70,24 @@ export class GraphPoint extends GraphNode {
 
     _y = undefined
     get y() {
-        if (this._y) {
-            return this._y;
-        }
-
-        if (this.hasAttribute("y")) {
+        let val = cacheFloatAttribute(this, "y")
+        if (!val) {
             try {
-                this._y = parseFloat(this.getAttribute("y"));
+                this._y_ = parseFloat(this.textContent);
             } catch(ex) {
-                this._y = this.getAttribute("y");
-            }
-        } else {
-            try {
-                this._y = parseFloat(this.textContent);
-            } catch(ex) {
-                this._y = this.textContent;
+                this._y_ = this.textContent;
             }    
         }
 
-        return this._y;
+        return this._y_;
     }
-    set y(val) { this._y = val; }
+    set y(val) { this._y_ = val; }
 
-    _x = undefined
+    _x_ = undefined
     get x() {
-        if (this._x) {
-            return this._x;
-        }
-
-        if (this.hasAttribute("x")) {
-            try {
-                this._x = parseFloat(this.getAttribute("x"));
-            } catch(ex) {
-                this._x = this.getAttribute("x");
-            }
-        }
-        return this._x;
+        return cacheFloatAttribute(this, "x");
     }
-    set x(val) { this._x = val; }
+    set x(val) { this._x_ = val; }
  
     style = {};
 

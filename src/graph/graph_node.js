@@ -2,14 +2,15 @@ function getStyleUnit(node, attr, resolved) {
     let val = getStyleAttr(node, attr, resolved);
     if (val) {
         try {
-            let match = val.match(/([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*(em|ex|ch|rem|vw|vh|vmin|vmax|%|cm|mm|px|pt|pc)/i)
-            return { value: parseFloat(match[1]), unit: match[4] };
+            let match = val.match(/([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*(em|ex|ch|rem|vw|vh|vmin|vmax|%|cm|mm|px|pt|pc)/i);
+            if (match) {
+                return { value: parseFloat(match[1]), unit: match[4] };
+            }
         } catch(ex) {
             console.error("Can't match unit", val, ex);
         }
-    } else {
-        return undefined;
     }
+    return undefined;
 }
 
 function getStyleAttr(node, attr, resolved) {
@@ -84,10 +85,26 @@ export default class GraphNode extends HTMLElement {
         this._fontSize = getCachedStyleAttrWithUnit(this, "font-size", 14, false, style);
         getCachedStyleAttr(this, "font", "14px sans-serif", false, style);
         this._listStyleType = getCachedStyleAttr(this, "list-style-type", "none", true, style);
+        getCachedStyleAttrWithUnit(this, "width", 0, false, style);
+        getCachedStyleAttrWithUnit(this, "height", 0, false, style);
+    }
+
+    get width() {
+        if (!this._width_) {
+            this._updateComputedStyles();
+        }
+        return this._width_;
+    }
+
+    get height() {
+        if (!this._height_) {
+            this._updateComputedStyles();
+        }
+        return this._height_;
     }
 
     get color() {
-        if (this._color) {
+        if (!this._color) {
             this._updateComputedStyles();
         }
         return this._color;
