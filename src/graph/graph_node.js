@@ -144,6 +144,14 @@ export default class GraphNode extends HTMLElement {
         return getCachedStyleAttr(this, "border-color", "transparent", true);
     }
 
+    get top() {
+        return getCachedStyleAttrWithUnit(this, "top", 0, false);
+    }
+
+    get left() {
+        return getCachedStyleAttrWithUnit(this, "left", 0, false);
+    }
+
     drawChildren(renderer, debug) {
         for (var i = 0; i < this.shadowRoot.childNodes.length; i++) {
             let child = this.shadowRoot.childNodes[i];

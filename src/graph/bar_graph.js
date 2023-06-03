@@ -207,8 +207,8 @@ export default class BarGraph extends GraphNode {
             renderer.fillColor = this.backgroundColor;
             renderer.strokeColor = this.borderColor;
             renderer.lineWidth = this.borderWidth.value;
-            renderer.fillRect(0, 0, width * 2, height * 2, true);
-            renderer.strokeRect(0, 0, width * 2, height * 2, true);
+            renderer.fillRect(0, 0, width, height, true);
+            renderer.strokeRect(0, 0, width, height, true);
         });
     }
 

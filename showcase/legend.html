@@ -32,10 +32,12 @@ import DemoSection from './DemoSection.js';
         <h2>Demos</h2>
         <x-demo>
             <x-graph id="graph">
-                <x-bars title="Set 1" style="background-color: #264653;">{ "January": 1, "February": 2, "March": 3 }</x-bars>
+                <x-axis></x-axis>
+                <y-axis></y-axis>
+                <x-bars title="Set 1" style="padding-left: 0.1; background-color: #264653;">{ "January": 1, "February": 2, "March": 3 }</x-bars>
                 <x-bars title="Set 2" style="background-color: #2a9d8f;">{ "January": 5, "February": 4, "March": 3 }</x-bars>
-                <x-bars title="Set 3" style="background-color: #e9c46a;">{ "January": 6, "February": 2, "March": 1 }</x-bars>
-                <x-legend x="2.1" y="6.9"></x-legend>
+                <x-bars title="Set 3" style="padding-right: 0.1; background-color: #e9c46a;">{ "January": 6, "February": 2, "March": 1 }</x-bars>
+                <x-legend style="top: 6.9; left: 2.7;"></x-legend>
             </x-graph>
         </x-demo>
         <h2>Styles</h2>
