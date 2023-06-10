@@ -1,3 +1,74 @@
+:root {
+    --primary: var(--md-ref-palette-primary40);
+    --primary-text: var(--md-ref-palette-primary100);
+    --primary-container: 203, 230, 255;
+    --primary-container-text: 0, 30, 48;
+
+    --secondary: 143, 78, 0;
+    --secondary-text: 255, 255, 255;
+    --secondary-container: 255, 220, 193;
+    --secondary-container-text: 46, 21, 0;
+
+    --tertiary: 101, 88, 123;
+    --tertiary-text: 255, 255, 255;
+    --tertiary-container: 235, 220, 255;
+    --tertiary-container-text: 33, 22, 52;
+
+    --error: 186, 26, 26;
+    --error-text: 255, 2555, 255;
+    --error-container: rgb255, 218, 214;
+    --error-container-text: 65, 0, 2;
+
+    --surface: var(--md-ref-palette-neutral99);
+    --surface-dim: var(--md-ref-palette-neutral90);
+    --surface-bright: var(--md-ref-palette-neutral99);
+    --surface-container-lowest: var(--md-ref-palette-neutral100);
+    --surface-container-low: var(--md-ref-palette-neutral95);
+    --surface-container: var(--md-ref-palette-neutral95);
+    --surface-container-high: var(--md-ref-palette-neutral90);
+    --surface-container-highest: var(--md-ref-palette-neutral90);
+    --surface-text: var(--md-ref-palette-neutral10);
+    --surface-variant: var(--md-ref-palette-neutral90);
+    --surface-variant-text: var(--md-ref-palette-neutral30);
+    --inverse-surface: var(--md-ref-palette-neutral20);
+    --inverse-surface-text: var(--md-ref-palette-neutral95);
+
+    --background: var(--md-ref-palette-neutral99);
+    --background-text: var(--md-ref-palette-neutral10);
+
+    --dark-primary: rgb(25, 118, 210);
+    --light-primary: rgb(187, 222, 251);
+
+    --outline: 114, 120, 126;
+    --shadow-color: var(--md-sys-color-shadow-light);
+    --shadow-0: none;
+    --shadow-1: 0 2px 3px rgba(var(--shadow-color), 0.5);
+    --shadow-2: 0 3px 6px rgba(var(--shadow-color), 0.5);
+    --shadow-3: 0 6px 10px rgba(var(--shadow-color), 0.5);
+    --shadow-4: 0 10px 16px rgba(var(--shadow-color), 0.5);
+
+    --border-size: 1px;
+    --padding-s: 2px;
+    --padding-m: 6px;
+    --padding-l: 10px;
+    --padding-xl: 14px;
+    --radius-s: 2px;
+    --radius-m: 4px;
+    --radius-l: 8px;
+    --radius-xl: 16px;
+    --radius-xxl: 32px;
+
+    --font: Arial;
+    --font-small: 8pt;
+    --font-medium: 12pt;
+    --font-large: 16pt;
+
+    --icon-font: 'Material Symbols Outlined';
+    --icon-font-weight: normal;
+    --icon-font-style: normal;
+    --icon-font-size: 24px;
+}
+
 html, body {
     font-family: Arial, Helvetica, sans-serif;
     margin: 0;

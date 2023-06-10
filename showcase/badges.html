@@ -1,0 +1,40 @@
+<html>
+    <head>
+        <style>
+:root {
+    --primary: 50, 100, 200;
+    --error: 255, 0 ,0;
+    --error-text: 255, 255, 255;
+    --padding-s: 3px;
+    --padding-m: 6px;
+    --padding-xl: 14px;
+    --radius-l: 10px;
+    --radius-xl: 16px;
+    --font-small: 8pt;
+    --font-medium: 12pt;
+    --font: Arial;
+}
+        </style>            
+        <link rel='stylesheet' type='text/css' href='tokens.css'>
+        <link rel='stylesheet' type='text/css' href='../src/material.css'> 
+        <link rel='stylesheet' type='text/css' href='showcase.css'> 
+        <script type="module">
+import DemoSection from './DemoSection.js';
+        </script>
+    </head>
+    <body>
+        <h1>Badge</h1>
+        <h2>Description</h2>
+        <p>A CSS only badge</p>
+        <h2>Demos</h2>
+        <x-demo>
+            <button badge="1">Button</button>
+        </x-demo>
+        <h2>Events</h2>
+        None (yet).
+        <h2>Slots</h2>
+        None
+        <h2>Parts</h2>
+        None
+    </body>
+</html>

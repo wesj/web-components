@@ -1,0 +1,31 @@
+body {
+    display: grid;
+    grid-template-columns: 150px auto;
+    grid-template-rows: 2em auto 2em;
+    height: 100%;
+    overflow: hidden;
+    grid-template-areas: 
+        "header header"
+        "navigation content"
+        "footer footer";
+}
+
+body > header {
+    grid-area: header;
+    position: relative;
+}
+
+body > footer {
+    grid-area: footer;
+    position: relative;
+}
+
+body > content {
+    grid-area: content;
+    overflow-y: scroll;
+}
+
+body > navigation {
+    grid-area: navigation;
+    overflow-y: scroll;
+}

@@ -1,37 +1,17 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link rel='stylesheet' type='text/css' href='tokens.css'>
+        <link rel='stylesheet' type='text/css' href='showcase.css'>
+        <link rel='stylesheet' type='text/css' href='../src/material.css'>
+        <link rel='stylesheet' type='text/css' href='../src/sidebar_layout.css'>
         <style>
-html, body {
-    font-family: 'Courier New', Courier, monospace;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    width: 100%;
-    height: 100%;
-}
-
-x-console {
-    display: block;
-    width: 100%;
-    border: 1px solid gray;
-}
-
-#sidebar {
-    height: 100%;
-    width: 200px;
-}
-
 #splitter {
     cursor: ew-resize;
     background-color: gray;
     width: 3px;
     min-width: 3px;
     height: 100%;
-}
-
-#content {
-    flex: 1;
 }
 
 ul, li {
@@ -75,7 +55,8 @@ window.addEventListener("load", start);
     </head>
 
     <body>
-        <div id="sidebar">
+        <header>Header</header>
+        <navigation id="sidebar">
             <ul>
                 <li><a target="frame" href="console.html">Console</a></li>
                 <li><a target="frame" href="dialog.html">Dialog</a></li>
@@ -95,10 +76,11 @@ window.addEventListener("load", start);
                 <li><a target="frame" href="line_graph.html">Line graph</a></li>
                 <li><a target="frame" href="trace.html">Trace</a></li>
             </ul>
-        </div>
-        <x-draggable id="splitter"></x-draggable>
-        <div id="content">
+            <x-draggable id="splitter"></x-draggable>
+        </navigation>
+        <content>
             <iframe name="frame" src="json.html"></iframe>
-        </div>
+        </content>
+        <footer>Footer</footer>
     </body>
 </html>
