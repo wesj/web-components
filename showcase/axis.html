@@ -7,29 +7,66 @@ import Axis from '../src/graph/axis.js';
 import FunctionGraph from '../src/graph/function_graph.js';
 import DemoSection from './DemoSection.js';
         </script>
+        <style>
+x-axis, y-axis, x-function { display: none; }
+x-graph {
+    background: linear-gradient(#4cc9f0, #4361ee);
+    display: block;
+    width: 400px;
+    height:400px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 3px solid #7209b7;
+}
+x-grid-ticks {
+    width: 100%;
+}
+        </style>
     </head>
     <body>
         <h1>Axis</h1>
         <h2>Description</h2>
         <p>An axis in a graph. Can be used to configure the bounds, grids, and labels.</p>
+        <p>A graph can contain multiple of the same axis direction. Data can specify which one they want to use with the "xAxis" or "yAxis" attributes.</p>
         <h2>Demos</h2>
-        <code style="white-space: pre-wrap;">
-&lt;x-graph style="display: block; width: 800px; height:400px;"&gt;
-    &lt;y-axis min="-1.1" max="1.1" ticks="major" labels="false"&gt;&lt;/y-axis&gt;
-    &lt;x-axis min="-3.14" max="3.14"&gt;&lt;/x-axis&gt;
-    &lt;x-function style="background-color: rgba(220,0,0, 0.5); border: 10px solid red;"&gt;Math.cos(x)&lt;/x-function&gt;
-&lt;/x-graph&gt;
-        </code>
-        <x-graph style="display: block; width: 800px; height:400px;">
-            <y-axis min="-1.1" max="1.1" ticks="major" labels="false"></y-axis>
-            <x-axis min="-3.14" max="3.14"></x-axis>
-            <x-function style="visibility: hidden; background-color: rgba(220,0,0, 0.5); border: 10px solid red;">Math.cos(x)</x-function>
-        </x-graph>
-        <h2>Events</h2>
-        None (yet).
-        <h2>Slots</h2>
-        None
-        <h2>Parts</h2>
-        None
+        <x-demo>
+            <x-graph>
+                <x-function style="visibility: hidden; background-color: #f7258599; border: 1px solid #f72585;">Math.cos(x)</x-function>
+                <x-function yAxis="#axis2" style="visibility: hidden; background-color: #7209b799; border: 1px solid #7209b7;">Math.sin(x)</x-function>
+                <y-axis style="border: 4px solid #4cc9f0; font: 24px Arial;" min="-1.1" max="1.1">
+                    <x-grid-ticks></x-grid-ticks>
+                </y-axis>
+                <y-axis id="axis2" style="position: absolute; left: 0;" min="-1" max="4">
+                    <x-grid-ticks></x-grid-ticks>
+                </y-axis>
+                <x-axis style="border: 2px solid #4361ee; font: 14px Arial;" min="-3.14" max="3.14">
+                    <x-grid-ticks></x-grid-ticks>
+                </x-axis>
+            </x-graph>
+        </x-demo>
+        <h2>Attributes</h2>
+        <dl>
+            <dt>min</dt>
+            <dd>Minimum value of the graph</dd>
+            <dt>max</dt>
+            <dd>Maximum value of the graph</dd>
+            <dt>values</dt>
+            <dd>A set of values to show along the graph</dd>
+            <dt>ticks</dt>
+            <dd>One of major, minor, or grid</dd>
+            <dt>labels</dt>
+            <dd>Whether or not to show labels on major grid lines or ticks</dd>
+        </dl>
+        <h2>Styles</h2>
+        <dl>
+            <dt>font</dt>
+            <dd>Controls font of labels</dd>
+            <dt>border</dt>
+            <dd>Controls the style of the main axis lines (color and width)</dd>
+            <dt>position</dt>
+            <dd>Controls the positioning of the axis. Supports "absolute"</dd>
+            <dt>right, left, top, bottom</dt>
+            <dd>Controls the positioning of an absolutely positioned axis. right or left for y-axis. top or bottom for x-axis.</dd>
+        </dl>
     </body>
 </html>

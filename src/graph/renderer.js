@@ -4,10 +4,10 @@ export default class Renderer {
 
         let rect = root.getBoundingClientRect();
         let style = window.getComputedStyle(root);
-        this.root.width = rect.width
+        this.width = this.root.width = rect.width
             - parseFloat(style.borderLeftWidth) - parseFloat(style.borderRightWidth)
             - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
-        this.root.height = rect.height
+        this.height = this.root.height = rect.height
             - parseFloat(style.borderTopWidth) - parseFloat(style.borderBottomWidth)
             - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
 
@@ -15,14 +15,59 @@ export default class Renderer {
     }
     
     toScreenCoords(x, y, skipTransform) {
-        let x2 = this.xAxis.toScreenCoords(x, this.root.clientWidth, skipTransform);
-        let y2 = this.yAxis.toScreenCoords(y, this.root.clientHeight, skipTransform);
+        let x2 = this.xAxis.toScreenCoords(x, this.width, skipTransform);
+        let y2 = this.yAxis.toScreenCoords(y, this.height, skipTransform);
+        if (x === null) x2 = 0;
+        if (y === null) y2 = 0;
         return [x2, y2];
     }
 
     fillRect(x, y, w, h, skipTransform) {
         let p = this.toScreenCoords(x, y, skipTransform);
-        this.ctx.fillRect(p[0] - w/2, p[1] - h/2, w, h);
+        let p2 = this.toScreenCoords(x + w, y + h, skipTransform);
+        w = p2[0] - p[0];
+        h = p2[1] - p[1];
+        console.log("fillrect", p, w, h);
+        this.ctx.fillRect(p[0], p[1], w, h);
+    }
+
+    squircle(x, y, width, height, cornerRadius) {
+        var radius = cornerRadius * 0.55; // Adjust the value to control the squircle effect
+        ctx.beginPath();
+        ctx.moveTo(x + cornerRadius, y);
+        ctx.lineTo(x + width - cornerRadius, y);
+        ctx.bezierCurveTo(x + width - radius, y, x + width, y + radius, x + width, y + cornerRadius);
+        ctx.lineTo(x + width, y + height - cornerRadius);
+        ctx.bezierCurveTo(x + width, y + height - radius, x + width - radius, y + height, x + width - cornerRadius, y + height);
+        ctx.lineTo(x + cornerRadius, y + height);
+        ctx.bezierCurveTo(x + radius, y + height, x, y + height - radius, x, y + height - cornerRadius);
+        ctx.lineTo(x, y + cornerRadius);
+        ctx.bezierCurveTo(x, y + radius, x + radius, y, x + cornerRadius, y);
+        ctx.closePath();
+        ctx.stroke();
+    }
+
+    roundedRect(x, y, width, height, radius) {
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + width - radius, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+        ctx.lineTo(x + width, y + height - radius);
+        ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+        ctx.lineTo(x + radius, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
+        ctx.stroke();
+    }
+
+    strokeRect(x, y, w, h, skipTransform) {
+        let p = this.toScreenCoords(x, y, skipTransform);
+        let p2 = this.toScreenCoords(x + w, y + h, skipTransform);
+        w = p2[0] - p[0];
+        h = p2[1] - p[1];
+        this.ctx.strokeRect(p[0], p[1], w, h);
     }
 
     moveTo(x, y, skipTransform) {
@@ -74,6 +119,10 @@ export default class Renderer {
         this.ctx.save();
         callback();
         this.ctx.restore();
+    }
+
+    set font(val) {
+        this.ctx.font = val;
     }
 
     set lineDash(vals) {

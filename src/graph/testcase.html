@@ -1,0 +1,48 @@
+<html>
+    <head>
+        <script type="module">
+class NoShadow extends HTMLElement {
+    connectedCallback() {
+        setTimeout(() => {
+            this.firstChild.style.backgroundColor = this.firstChild.style.backgroundColor || "red";
+        }, 10);
+    }
+}
+customElements.define("x-no-shadow", NoShadow);
+
+class Shadow extends NoShadow {
+    constructor() {
+        super();
+        let shadow = this.attachShadow({ mode: "open" });
+        shadow.appendChild(document.createElement("slot"));
+    }
+}
+customElements.define("x-shadow", Shadow);
+        </script>
+        <style type="text/css">
+x-no-shadow, x-shadow {
+    background-color: red;
+    display: block;
+    width: 100px;
+    height: 40px;
+    position: relative;
+}
+x-no-shadow > *, x-shadow > * {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.stylesheet {
+    background-color: green;
+    width: 100px;
+    height: 40px;
+}
+        </style>
+    </head>
+    <body>
+        <x-no-shadow><div class="stylesheet">No shadow</div></x-no-shadow>
+        <x-no-shadow><div style="width: 100px; height: 40px; background-color: green;">No shadow inline</div></x-no-shadow>
+        <x-shadow><div class="stylesheet">Shadow</div></x-shadow>
+        <x-shadow><div style="width: 100px; height: 40px; background-color: green;">Shadow inline</div></x-shadow>
+    </body>
+</html>

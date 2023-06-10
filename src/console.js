@@ -8,8 +8,10 @@ export const ConsoleItemType = {
 
 export class ConsoleItem extends HTMLElement {
     _sourceElt = null;
-    constructor() {
+    _source = [];
+    constructor(proxy) {
         super();
+        this.proxy = proxy;
         let shadow = this.attachShadow({mode: 'open'});
 
         let content = document.createElement("span");
@@ -124,8 +126,8 @@ export class Console extends HTMLElement {
         super();
         let shadow = this.attachShadow({mode: 'open'});
 
-        let toolbar = document.createElement("div");
-        toolbar.classList.add("toolbar");
+        /*
+        let toolbar = document.createElement("toolbar");
         shadow.appendChild(toolbar);
 
         let deleteButton = document.createElement("button");
@@ -149,6 +151,7 @@ export class Console extends HTMLElement {
         let settingsButton = document.createElement("button");
         settingsButton.textContent = "Settings"
         toolbar.appendChild(settingsButton);
+        */
 
         let ol = document.createElement("ol");
         shadow.appendChild(ol);
@@ -174,6 +177,113 @@ export class Console extends HTMLElement {
         }
         `;
         shadow.appendChild(style);
+
+        this.info = this.info.bind(this);
+        this.log = this.log.bind(this);
+        this.error = this.error.bind(this);
+        this._current = this;
+    }
+
+    _handleLevel(level, theArgs) {
+        let item = new ConsoleItem();
+        item.setAttribute("level", level);
+        if (this._source && this._source.length > 0) {
+            item.setAttribute("source", this._source[this._source.length - 1]);
+        }
+        this.appendArg(item, theArgs);
+        this._current.appendChild(item);
+
+        if (this.proxy) this.proxy[level].apply(this.proxy, theArgs);
+        return item;
+    }
+
+    info(...theArgs) {
+        this._handleLevel("info", theArgs);
+    }
+
+    log(...theArgs) {
+        this._handleLevel("log", theArgs);
+    }
+
+    error(...theArgs) {
+        this._handleLevel("error", theArgs);
+    }
+
+    assert(...theArgs) {
+        this._handleLevel("assert", theArgs);
+    }
+
+    clear(...theArgs) {
+        while (this.firstChild) {
+            this.removeChild(this.firstChild);
+        }
+    }
+
+    countReset(...theArgs) {
+        // this._handleLevel("countReset", theArgs);
+    }
+
+    debug(...theArgs) {
+        this._handleLevel("debug", theArgs);
+    }
+
+    dir(...theArgs) {
+        this._handleLevel("dir", theArgs);
+    }
+
+    dirxml(...theArgs) {
+        this._handleLevel("dirxml", theArgs);
+    }
+
+    group(...theArgs) {
+        this._current = this._handleLevel("group", theArgs);
+        if (!this._source) this._source = [];
+        this._source.push(theArgs[0]);
+    }
+
+    groupCollapsed(...theArgs) {
+        if (this.proxy) this.proxy.groupCollapsed.apply(this.proxy, theArgs);
+    }
+
+    groupEnd(...theArgs) {
+        this._source.pop();
+        this._current = this._current.parentNode;
+        if (this.proxy) this.proxy.groupEnd.apply(this.proxy, theArgs);
+    }
+
+    profile(...theArgs) { }
+    profileEnd(...theArgs) { }
+
+    table(...theArgs) { }
+    timeEnd(...theArgs) { }
+    timeLog(...theArgs) { }
+    timeStamp(...theArgs) { }
+    trace(...theArgs) { }
+    warn(...theArgs) {
+        this._handleLevel("warn", theArgs);
+    }
+
+    appendArg(item, args) {
+        let frag = new DocumentFragment();
+        for (var i = 0; i < args.length; i++) {
+            let arg = args[i];
+            if (typeof(arg) === "object") {
+                let span = document.createElement("span");
+                span.setAttribute("type", "obj");
+                span.textContent = JSON.stringify(arg);
+                frag.appendChild(span);
+            } else {
+                let span = document.createElement("span");
+                span.setAttribute("type", typeof(arg));
+                try {
+                    span.textContent = arg + "";
+                } catch(ex) {
+                    console.error("Can't log", arg);
+                }
+                frag.appendChild(span);
+            }
+        }
+        item.appendChild(frag);
     }
 }
 

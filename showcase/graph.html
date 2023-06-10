@@ -7,18 +7,26 @@ import Axis from '../src/graph/axis.js';
 import FunctionGraph from '../src/graph/function_graph.js';
 import DemoSection from './DemoSection.js';
         </script>
+        <style type="text/css">
+x-graph {
+    background-color: lightcoral;
+    display: block;
+    width: 800px;
+    height: 400px;
+    border-radius: 20px;
+}
+        </style>
     </head>
     <body>
         <h1>Graph</h1>
         <h2>Description</h2>
         <p>A graph. Can hold different datasets or axises. Will automatically insert a default x and y axis if none are provided</p>
+        <p>Graph elements are elements that implement a <code>render</code> function. They'll be drawn in order that they are located in the DOM.</p>
+        <p>The graph itself is really just a DOM node container, so most normal CSS should work fine in it.</p>
         <h2>Demos</h2>
-        <code style="white-space: pre-wrap;">
-&lt;x-graph style="display: block; width: 800px; height:400px;"&gt;
-&lt;/x-graph&gt;
-        </code>
-        <x-graph style="display: block; width: 800px; height:400px;">
-        </x-graph>
+        <x-demo>
+            <x-graph></x-graph>    
+        </x-demo>
         <h2>Events</h2>
         None (yet).
         <h2>Slots</h2>

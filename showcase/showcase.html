@@ -14,6 +14,11 @@
     height: 100%;
 }
 
+#content {
+    flex: 1;
+    overflow-y: scroll;
+}
+
 ul, li {
     list-style-type: none;
     list-style-image: none;
@@ -48,39 +53,96 @@ function start() {
     let splitter = document.querySelector("#splitter");
     splitter.dragStart = () => { w = sidebar.getBoundingClientRect().width; }
     splitter.ondrag = (x, y) => { sidebar.style.width = (w + x) + "px"; }
+
+    addFiles(files, document.querySelector("#list"));
+    hashChange();
 }
 
+function hashChange() {
+    let hash = document.hash || "axis";
+    let file = findFile(files, hash);
+    if (file) {
+        document.getElementById("frame").setAttribute("src", file.filename);
+    }
+}
+
+function findFile(files, hash) {
+    files.find((f) => {
+        if (f.name === hash) {
+            return f;
+        }
+
+        if (f.children) {
+            return findFile(f.children, hash);
+        }
+
+        return null;
+    })
+}
+
+function addFiles(files, list) {
+    files.sort((a,b) => a.name > b.name).forEach((file) => {
+        let li = document.createElement("li");
+        if (file.file) {
+            let a = document.createElement("a");
+            a.textContent = file.name;
+            a.setAttribute("href", file.file);
+            a.setAttribute("target", "frame");
+            li.appendChild(a);
+        } else if (file.children) {
+            let ul = document.createElement("ul");
+            addFiles(file.children, ul);
+            li.appendChild(ul);
+        }
+        list.appendChild(li);
+    })
+}
+
+let files = [
+    { name: "UI", children: [
+        { name: "Badges", file: "badges.html" },
+        { name: "Dialog", file: "dialog.html" },
+        { name: "Draggable", file: "draggable.html" },
+        { name: "Icon", file: "icon.html" },
+        { name: "Menu", file: "menu.html" },
+        { name: "Tabs", file: "tabs.html" },
+        { name: "Timeline", file: "timeline.html" },
+        { name: "Titlebar", file: "titlebar.html" },
+        { name: "Toolbar", file: "toolbar.html" },
+        { name: "Window", file: "window.html" },
+    ]},
+    { name: "Graphing", children: [
+        { name: "Axis", file: "axis.html" },
+        { name: "Bar Graph", file: "bar_graph.html" },
+        { name: "Function Graph", file: "function_graph.html" },
+        { name: "Graph", file: "graph.html" },
+        { name: "Legend", file: "legend.html" },
+        { name: "Line Graph", file: "line_graph.html" },
+        { name: "Trace", file: "trace.html" },
+    ]},
+    { name: "Object viweres", children: [
+        { name: "Console", file: "console.html" },
+        { name: "JSON", file: "json.html" },
+        { name: "Object Printer", file: "ObjectPrinter.html" },
+        { name: "Syntax", file: "syntax.html" },
+        { name: "Zip Reader", file: "ZipReader.html" },
+    ]},
+]
+
 window.addEventListener("load", start);
+window.addEventListener("hashchange", hashChange);
         </script>
     </head>
 
     <body>
-        <header>Header</header>
+        <header>Web components gallery</header>
         <navigation id="sidebar">
-            <ul>
-                <li><a target="frame" href="console.html">Console</a></li>
-                <li><a target="frame" href="dialog.html">Dialog</a></li>
-                <li><a target="frame" href="draggable.html">Draggable</a></li>
-                <li><a target="frame" href="icon.html">Icon</a></li>
-                <li><a target="frame" href="json.html">JSON</a></li>
-                <li><a target="frame" href="menu.html">Menu</a></li>
-                <li><a target="frame" href="syntax.html">Syntax</a></li>
-                <li><a target="frame" href="titlebar.html">Titlebar</a></li>
-                <li><a target="frame" href="Toolbar.html">Toolbar</a></li>
-                <li><a target="frame" href="tabs.html">Tab</a></li>
-                <li><a target="frame" href="window.html">Window</a></li>
-                <hr/>
-                <li><a target="frame" href="axis.html">Axis</a></li>
-                <li><a target="frame" href="function_graph.html">Function graph</a></li>
-                <li><a target="frame" href="graph.html">Graph</a></li>
-                <li><a target="frame" href="line_graph.html">Line graph</a></li>
-                <li><a target="frame" href="trace.html">Trace</a></li>
-            </ul>
+            <ul id="list"></ul>
             <x-draggable id="splitter"></x-draggable>
         </navigation>
-        <content>
-            <iframe name="frame" src="json.html"></iframe>
+        <content id="content">
+            <iframe name="frame" src=""></iframe>
         </content>
-        <footer>Footer</footer>
+        <footer></footer>
     </body>
 </html>

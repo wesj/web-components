@@ -6,19 +6,72 @@ import Graph from '../src/graph/graph.js';
 import LineGraph from '../src/graph/line_graph.js';
 import Annotation from '../src/graph/annotation.js';
 import DemoSection from './DemoSection.js';
+
+function start() {
+    let graph = document.getElementById("graph");
+    let data = document.getElementById("data");
+    let anno = document.getElementById("annotation");
+
+    graph.addEventListener("mousemove", (event) => {
+        let coords = graph.eventToCanvasCoords(event, data);
+        let nearest = graph.getNearestPoint(coords[0], coords[1]);
+
+        anno.textContent = "x: " + nearest.point.x + ",y: " + nearest.point.y;
+        anno.setAttribute("x", nearest.point.x);
+        anno.setAttribute("y", nearest.point.y);
+        graph.setNeedsRender();
+    });
+}
+window.addEventListener("load", start);
         </script>
+        <style type="text/css">
+x-graph > x-annotation {
+    opacity: 0.0;
+    transition: opacity 1000ms, top 250ms, left 250ms, display 0ms;
+}
+
+x-data {
+    list-style-type: disc;
+    border-radius: 5px;
+    color: blue;
+}
+
+x-grid-ticks {
+    width: 100%;
+}
+
+x-graph:hover > x-annotation {
+    opacity: 1.0;
+}
+
+x-annotation {
+    padding: 5px; 
+    color: white;
+    border-radius:3px;
+}
+        </style>
     </head>
     <body>
         <h1>Annotation</h1>
         <h2>Description</h2>
         <p>Allows showing an annotation on a graph.</p>
+        <p>TODO: Right now annotations have to re-render the graph when their position updates, but we shouldn't need to do that</p>
         <h2>Demos</h2>
-        <x-graph id="graph" style="position: relative; display: block; width: 800px; height:400px;">
-            <x-data>
-                [1,2,3,4,5]
-            </x-data>
-            <x-annotation style="padding: 5px; background-color: purple; color: white; border-radius:3px;" x="1" y="2">This is at (1, 2)</x-annotation>
-        </x-graph>
+        <x-demo>
+            <x-graph id="graph" style="position: relative; display: block; width: 800px; height:400px;">
+                <x-axis>
+                    <x-grid-ticks></x-grid-ticks>
+                    <x-grid-labels></x-grid-labels>
+                </x-axis>
+                <y-axis>
+                    <x-grid-ticks></x-grid-ticks>
+                    <x-grid-labels></x-grid-labels>
+                </y-axis>
+                <x-data id="data">[1,2,3,4,5]</x-data>
+                <x-annotation style="background-color: #cad2c5;" x="1" y="2">This is at (1, 2)</x-annotation>
+                <x-annotation id="annotation" style="background-color: #84a98c;"></x-annotation>
+            </x-graph>
+        </x-demo>
         <h2>Events</h2>
         None (yet).
         <h2>Slots</h2>

@@ -45,7 +45,9 @@ export default class Syntax extends HTMLElement {
 
         this.list = document.createElement("ul");
         this.shadowRoot.append(this.list);
+    }
 
+    connectedCallback() {
         let src = this.innerHTML;
         this.innerHTML = "";
         let lines = src.split(/[\r\n]+/);

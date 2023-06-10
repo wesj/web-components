@@ -5,22 +5,28 @@ export default class DemoSection extends HTMLElement {
     content = null;
 
     connectedCallback() {
-        this.content = this.content || this.innerHTML;
-        this.innerHTML = 
-        `<x-tabs>
-            <x-tab title="Example" class="example">
-            `
-            + this.content +
-            `
-            </x-tab>
-            <x-tab title="Code">
-                <x-syntax>
-                `
-                + this.content +
-                `
-                </x-syntax>
-            </x-tab>
-        `;
+        if (!this._inited_) {
+            this._inited_ = true;
+            this.content = this.content || this.innerHTML;
+
+            let example = new Tab();
+            example.setAttribute("title", "Example");
+            while(this.firstChild) {
+                example.appendChild(this.firstChild);
+            }
+
+            let code = new Tab();
+            code.setAttribute("title", "Code");
+            let syntax = new Syntax();
+            syntax.innerHTML = example.innerHTML;
+            code.appendChild(syntax);
+
+            let tabs = new Tabs();
+            tabs.appendChild(example);
+            tabs.appendChild(code);
+
+            this.appendChild(tabs);
+        }
     }      
 }
 

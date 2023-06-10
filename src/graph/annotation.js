@@ -5,27 +5,25 @@ export default class Annotation extends GraphNode {
         super();
         this.style.position = "absolute";
     }
+
     get x() {
         let x = this.getAttribute("x");
-        if (x === "current") {
-            return Infinity;
-        }
-        return parseFloat(x);
+        return parseFloat(x) || x;
     }
 
     get y() {
-        let x = this.getAttribute("y");
-        if (x === "current") {
-            return Infinity;
-        }
-        return parseFloat(x);
+        let y = this.getAttribute("y");
+        return parseFloat(y) || y;
     }
 
     render(renderer) {
-        let x = renderer.xAxis.toScreenCoords(this.x);
-        let y = renderer.yAxis.toScreenCoords(this.y);
-        this.style.top = y;
-        this.style.left = x;
+        this.updatePosition(renderer, this.x, this.y);
+    }
+
+    updatePosition(renderer, x, y) {
+        let p = renderer.toScreenCoords(x, y);
+        this.style.top = p[1];
+        this.style.left = p[0];
     }
 }
 customElements.define("x-annotation", Annotation);
